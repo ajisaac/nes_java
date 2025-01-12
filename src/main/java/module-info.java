@@ -1,8 +1,8 @@
-module co.aisaac.nesjava {
+module co.aisaac.nes_java {
     requires javafx.controls;
     requires javafx.fxml;
 
 
-    opens co.aisaac.nesjava to javafx.fxml;
-    exports co.aisaac.nesjava;
+    opens co.aisaac.nes_java to javafx.fxml;
+    exports co.aisaac.nes_java;
 }

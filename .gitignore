@@ -19,3 +19,4 @@ target/
 /mvnw.cmd
 
 .DS_Store
+/src/main/resources/data/Nintendo/

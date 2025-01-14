@@ -1,6 +1,16 @@
 package co.aisaac.nes_java;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HexFormat;
+
 /*
+ Cartridge loaded from a .nes file
+ http://wiki.nesdev.com/w/index.php/INES
+ http://nesdev.com/NESDoc.pdf (page 28)
+
  Header (16 bytes)
  Trainer, if present (0 or 512 bytes)
  PRG ROM data (16384 * x bytes)
@@ -10,11 +20,22 @@ package co.aisaac.nes_java;
  */
 public class Cartridge {
 
+    // PRG-ROM
     byte[] prg;
+
+    // CHR-ROM
     byte[] chr;
+
+    // save ram?
     byte[] sram;
+
+    // mapper type
     int mapper;
+
+    // mirroring mode?
     int mirror;
+
+    // has battery?
     int battery;
 
     /**
@@ -25,75 +46,133 @@ public class Cartridge {
     /**
      * The first 16 bytes
      */
+    byte[] header;
 
-    public Cartridge(String path) {
-        System.out.println(path);
+    public Cartridge(String file) throws IOException {
 
         // open file
-        std::ifstream file;
-        file.open(path);
-        if (!file.is_open()) {
-            exit(1);
-        }
-
+        Path path = Path.of(file);
+        byte[] bytes = Files.readAllBytes(path);
 
         // read file header
-        // Magic number First 4 bytes
-        int c = bytes[0] | bytes[1] << 8 | bytes[2] << 16 | bytes[3] << 24;
-        if (c != MAGIC) {
-            std::cout << "Invalid iNES file" << std::endl;
-            exit(1);
-        }
+        header = Arrays.copyOfRange(bytes, 0, 16);
+
+        // first 4 bytes
+        verifyMagicNumber();
 
         // num of PRG-ROM in 16kb chunks
-        char numPrg = bytes[4];
+        byte numPrg = header[4];
 
-        // num of CHR-ROM banks in 8kb chunks, 0 means board uses CHR-RAM
-        char numChr = bytes[5];
+        // num of CHR-ROM in 8kb chunks, 0 means board uses CHR-RAM
+        byte numChr = header[5];
 
-        char control1 = bytes[6];
-        char control2 = bytes[7];
-        char numRam = bytes[8]; // x 8KB
+        // control bits
+        byte control1 = header[6];
+        // control bits
+        byte control2 = header[7];
 
-        // unused
-        char flags9 = bytes[9];
-        char flags10 = bytes[10];
+        // PRG-RAM size ( x 8KB ) each
+        byte numRam = header[8];
 
-        // mapper type
-        int mapper1 = control1 >> 4;
-        int mapper2 = control2 >> 4;
-        mapper = mapper1 | mapper2 << 4;
+        // 9, 10, 11, 12, 13, 14, 15 -> these 7 bytes are unused
 
-        // mirroring type
-        int mirror1 = control1 & 1;
-        int mirror2 = (control1 >> 3) & 1;
-        mirror = mirror1 | mirror2 << 1;
 
-        // battery-backed RAM
-        battery = (control1 >> 1) & 1;
 
-        // read trainer if present (unused)
-        if ((control1 & 4) == 4) {
-            std::vector<char> trainer{};
-            for (int i = 0; i < 512; i++) {
-                trainer[i] = bytes[i];
-            }
-        }
+        // load trainer if present
 
-        // read prg-rom bank(s)
-        prg.resize(numPrg * 16384);
-        for (int i = 0; i < numPrg * 16384; i++) {
-            prg[i] = bytes[i];
-        }
+        // load PRG ROM
 
-        // read chr-rom bank(s)
-        chr.resize(numChr * 8192);
-        for (int i = 0; i < numChr * 8192; i++) {
-            chr[i] = bytes[i];
-        }
+        // LOAD CHR ROM
 
-        std::cout << "get out of my house " << std::endl;
+        // PlayChoice INST-ROM if present
+
+        // PlayChoice PROM, if present
+
+
+        // read in all the bytes from the file
+
     }
-};
 
-#endif //NES_EMU_CARTRIDGE_H
+    // verify magic number, first 4 bytes
+    private void verifyMagicNumber() {
+        int i = header[0] | header[1] << 8 | header[2] << 16 | header[3] << 24;
+        if (i != MAGIC) throw new IllegalStateException("Magic number unexpected: 0x" + HexFormat.of().toHexDigits(i));
+    }
+
+    // TODO everything below here is unused at the moment, until we go for version 2 which is the more accurate version
+    // FLAGS 6
+
+    // 0 == vertical arrangement / "horizontal mirrored" (CIRAM a10 = PPU A11)
+    // 1 == horizontal arrangement / "veritcal mirrored" (CIRAM a10 = PPU A10)
+    private int nametableArrangement() {
+        return header[6] | 0b00000001;
+    }
+
+    private int hasBatteryPrgRam() {
+        return header[6] | 0b00000010;
+    }
+
+    private int hasTrainerData() {
+        return header[6] | 0b00000100;
+    }
+
+    private int hasAlternativeNametableLayout() {
+        return header[6] | 0b00001000;
+    }
+
+    // first 4 bits of 6 and 7
+    // 6's is low nibble, 7's is high nibble
+    private byte getMapper() {
+        return (byte) ((header[6] & 0b11110000) | ((header[7] & 0b11110000) >> 4));
+    }
+
+    // FLAGS 7
+
+    private int hasVsUnisystem() {
+        return header[7] | 0b00000001;
+    }
+
+    private int hasPlayChoice10() {
+        return header[7] | 0b00000010;
+    }
+
+    // if equal to 2, then yes
+    private int hasNes2format() {
+        return header[7] | 0b00001100;
+    }
+
+    // FLAGS 8
+
+    private int prgRamSize() {
+        return header[8];
+    }
+
+    // 0:NTSC or 1:PAL
+    private int tvSystem() {
+        return header[9] | 0b00000001;
+    }
+
+    // reserved, set to 0
+    private int f9Reserved() {
+        int i = header[9] & 0b11111110;
+        if (i != 0) throw new IllegalStateException("f9 bits should be 0");
+        return i;
+    }
+
+    // FLAGS 10
+
+    // 0: NTSC, 2: PAL, 1/3: Dual Compatible
+    private int f10tvSystem() {
+        return header[10] | 0b00000011;
+    }
+
+    // 0: present, 1: not present
+    private int f10prgRam() {
+        return header[10] | 0b00010000;
+    }
+
+    // 0: no conflicts, 1: conflicts
+    private int f10busConflicts() {
+        return header[10] | 0b00100000;
+    }
+}

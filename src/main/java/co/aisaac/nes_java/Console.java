@@ -1,5 +1,7 @@
 package co.aisaac.nes_java;
 
+import java.io.IOException;
+
 public class Console {
 
     PPU ppu;
@@ -12,7 +14,7 @@ public class Console {
     Cartridge cartridge;
     Mapper mapper;
 
-    Console(String path) {
+    Console(String path) throws IOException {
         ppu = new PPU();
         apu = new APU();
         controller1 = new Controller();

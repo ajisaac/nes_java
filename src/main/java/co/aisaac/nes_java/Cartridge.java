@@ -6,6 +6,89 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HexFormat;
 
+package nes;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+
+/*
+// Cartridge struct translated from Go.
+// PRG: PRG-ROM banks
+// CHR: CHR-ROM banks
+// SRAM: Save RAM
+// Mapper: mapper type
+// Mirror: mirroring mode
+// Battery: battery present
+public class Cartridge {
+    public byte[] PRG;     // PRG-ROM banks
+    public byte[] CHR;     // CHR-ROM banks
+    public byte[] SRAM;    // Save RAM
+    public byte Mapper;    // mapper type
+    public byte Mirror;    // mirroring mode
+    public byte Battery;   // battery present
+
+    public Cartridge(byte[] PRG, byte[] CHR, byte[] SRAM, byte Mapper, byte Mirror, byte Battery) {
+        this.PRG = PRG;
+        this.CHR = CHR;
+        this.SRAM = SRAM;
+        this.Mapper = Mapper;
+        this.Mirror = Mirror;
+        this.Battery = Battery;
+    }
+
+    // NewCartridge creates a new Cartridge instance.
+    // It allocates SRAM with size 0x2000 and initializes the Cartridge fields.
+    public static Cartridge NewCartridge(byte[] prg, byte[] chr, byte mapper, byte mirror, byte battery) {
+        byte[] sram = new byte[0x2000];
+        return new Cartridge(prg, chr, sram, mapper, mirror, battery);
+    }
+
+    // Save serializes selected Cartridge fields using a GobEncoder.
+    public void Save(GobEncoder encoder) throws IOException {
+        encoder.Encode(this.PRG);
+        encoder.Encode(this.CHR);
+        encoder.Encode(this.SRAM);
+        encoder.Encode(this.Mirror);
+    }
+
+    // Load deserializes selected Cartridge fields using a GobDecoder.
+    public void Load(GobDecoder decoder) throws IOException, ClassNotFoundException {
+        this.PRG = (byte[]) decoder.Decode(byte[].class);
+        this.CHR = (byte[]) decoder.Decode(byte[].class);
+        this.SRAM = (byte[]) decoder.Decode(byte[].class);
+        this.Mirror = (Byte) decoder.Decode(Byte.class);
+    }
+}
+
+// GobEncoder mimics the Go gob.Encoder functionality using Java ObjectOutputStream.
+class GobEncoder {
+    private ObjectOutputStream out;
+
+    public GobEncoder(OutputStream os) throws IOException {
+        this.out = new ObjectOutputStream(os);
+    }
+
+    public void Encode(Object obj) throws IOException {
+        out.writeObject(obj);
+    }
+}
+
+// GobDecoder mimics the Go gob.Decoder functionality using Java ObjectInputStream.
+class GobDecoder {
+    private ObjectInputStream in;
+
+    public GobDecoder(InputStream is) throws IOException {
+        this.in = new ObjectInputStream(is);
+    }
+
+    public Object Decode(Class<?> clazz) throws IOException, ClassNotFoundException {
+        return in.readObject();
+    }
+}
+*/
 /*
  Cartridge loaded from a .nes file
  http://wiki.nesdev.com/w/index.php/INES

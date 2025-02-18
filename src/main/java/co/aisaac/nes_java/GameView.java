@@ -1,11 +1,13 @@
 package co.aisaac.nes_java;
 
 
+import java.io.IOException;
+
 public class GameView {
 
     private final Console console;
 
-    GameView(String path) {
+    GameView(String path) throws IOException {
         console = new Console(path);
     }
 

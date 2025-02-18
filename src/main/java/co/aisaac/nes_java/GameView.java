@@ -5,10 +5,10 @@ import java.io.IOException;
 
 public class GameView {
 
-    private final Console console;
+    private final co.aisaac.nes_java.cpu.Console console;
 
     GameView(String path) throws IOException {
-        console = new Console(path);
+        console = new co.aisaac.nes_java.cpu.Console(path);
     }
 
     public void update(long now, long delta) {

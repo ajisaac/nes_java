@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 // iNES file loader and Cartridge creation
-public class NESFileLoader {
+public class INes {
 
     public static final int iNESFileMagic = 0x1a53454e;
 
@@ -109,30 +109,5 @@ public class NESFileLoader {
         header.padding = new byte[7];
         buffer.get(header.padding);
         return header;
-    }
-}
-
-// Cartridge struct:
-// PRG     []byte // PRG-ROM banks
-// CHR     []byte // CHR-ROM banks
-// SRAM    []byte // Save RAM
-// Mapper  byte   // mapper type
-// Mirror  byte   // mirroring mode
-// Battery byte   // battery present
-class Cartridge {
-    public byte[] PRG;    // PRG-ROM banks
-    public byte[] CHR;    // CHR-ROM banks
-    public byte[] SRAM;   // Save RAM
-    public int Mapper;    // mapper type
-    public int Mirror;    // mirroring mode
-    public int Battery;   // battery present
-
-    public Cartridge(byte[] prg, byte[] chr, int mapper, int mirror, int battery) {
-        this.PRG = prg;
-        this.CHR = chr;
-        this.Mapper = mapper;
-        this.Mirror = mirror;
-        this.Battery = battery;
-        this.SRAM = null;
     }
 }

@@ -1,9 +1,8 @@
 package co.aisaac.nes_java;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 
-public class Nes {
+public class Palette {
     // Global Palette array of 64 RGBA colors
     public static Color[] Palette = new Color[64];
 
@@ -26,43 +25,5 @@ public class Nes {
             // Construct the Color with red, green, blue and full opacity (0xFF)
             Palette[i] = new Color(r & 0xFF, g & 0xFF, b & 0xFF, 0xFF);
         }
-    }
-}
-
-class PPU {
-    // Array of palette data bytes
-    public byte[] paletteData;
-    // Front buffer as a BufferedImage (acting as image.RGBA)
-    public BufferedImage front;
-
-    // Read palette data at the given address with adjustments
-    public int readPalette(int address) {
-        if (address >= 16 && address % 4 == 0) {
-            address -= 16;
-        }
-        return paletteData[address] & 0xFF;
-    }
-
-    // Write a byte value to the palette data at the given address with adjustments
-    public void writePalette(int address, int value) {
-        if (address >= 16 && address % 4 == 0) {
-            address -= 16;
-        }
-        paletteData[address] = (byte)(value & 0xFF);
-    }
-}
-
-class Console {
-    // The PPU instance associated with this Console
-    public PPU PPU;
-
-    // Return the background color using palette lookup
-    public Color BackgroundColor() {
-        return Nes.Palette[PPU.readPalette(0) % 64];
-    }
-
-    // Return the front buffer image
-    public BufferedImage Buffer() {
-        return PPU.front;
     }
 }

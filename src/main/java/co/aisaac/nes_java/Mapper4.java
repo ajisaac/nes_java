@@ -2,19 +2,10 @@ package co.aisaac.nes_java;
 
 import java.io.*;
 
-// Mapper interface definition
-public interface Mapper {
-    void Save(ObjectOutputStream encoder) throws IOException;
-    void Load(ObjectInputStream decoder) throws IOException, ClassNotFoundException;
-    void Step();
-    byte Read(int address);
-    void Write(int address, byte value);
-}
-
 // Mapper4 class translated from Golang
-public class Mapper4 implements Mapper {
+public class Mapper4 extends Mapper {
     public Cartridge Cartridge;
-    public Console console;
+    public co.aisaac.nes_java.cpu.Console console;
     public byte register;
     public byte[] registers = new byte[8];
     public byte prgMode;
@@ -26,7 +17,7 @@ public class Mapper4 implements Mapper {
     public boolean irqEnable;
 
     // Constructor equivalent to NewMapper4 in Golang
-    public Mapper4(Console console, Cartridge cartridge) {
+    public Mapper4(co.aisaac.nes_java.cpu.Console console, Cartridge cartridge) {
         this.Cartridge = cartridge;
         this.console = console;
         this.prgOffsets[0] = prgBankOffset(0);
@@ -35,7 +26,7 @@ public class Mapper4 implements Mapper {
         this.prgOffsets[3] = prgBankOffset(-1);
     }
 
-    public static Mapper NewMapper4(Console console, Cartridge cartridge) {
+    public static Mapper NewMapper4(co.aisaac.nes_java.cpu.Console console, Cartridge cartridge) {
         return new Mapper4(console, cartridge);
     }
 
@@ -261,31 +252,3 @@ public class Mapper4 implements Mapper {
     }
 }
 
-// Supporting classes and definitions
-
-class Cartridge {
-    public byte[] PRG;
-    public byte[] CHR;
-    public byte[] SRAM;
-    public int Mirror;
-
-    public static final int MirrorVertical = 0;
-    public static final int MirrorHorizontal = 1;
-}
-
-class Console {
-    public PPU PPU;
-    public CPU CPU;
-}
-
-class PPU {
-    public int Cycle;
-    public int ScanLine;
-    public byte flagShowBackground;
-    public byte flagShowSprites;
-}
-
-class CPU {
-    public void triggerIRQ() {
-    }
-}

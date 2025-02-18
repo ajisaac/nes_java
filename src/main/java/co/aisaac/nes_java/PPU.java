@@ -6,64 +6,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-// Memory interface equivalent to the Go memory interface
-interface Memory {
-    byte Read(int address);
-    void Write(int address, byte value);
-}
-
-// PPUMemory class implements the Memory interface.
-// It is constructed with a Console reference and provides 16 KB of memory.
-class PPUMemory implements Memory {
-    private byte[] mem = new byte[0x4000]; // 16K memory
-
-    public PPUMemory(Console console) {
-        // No additional implementation required; console is accepted per original signature.
-    }
-
-    public byte Read(int address) {
-        return mem[address & 0x3FFF];
-    }
-
-    public void Write(int address, byte value) {
-        mem[address & 0x3FFF] = value;
-    }
-}
-
-// CPU class provides minimal functionality needed by the PPU.
-// It includes a triggerNMI method, a stall counter, cycle counter and memory for reading.
-class CPU {
-    public int Cycles = 0;
-    public int stall = 0;
-    private byte[] ram = new byte[65536];
-
-    public void triggerNMI() {
-        // In a complete implementation, this would trigger a Non-Maskable Interrupt.
-    }
-
-    public byte Read(int address) {
-        return ram[address & 0xFFFF];
-    }
-
-    public void Write(int address, byte value) {
-        ram[address & 0xFFFF] = value;
-    }
-}
-
-// Console class holds a reference to the CPU.
-class Console {
-    public CPU CPU;
-
-    public Console() {
-        CPU = new CPU();
-    }
-}
-
-// The PPU class is a complete, line-by-line translation of the Go PPU implementation.
 public class PPU {
     // Memory interface
-    private Memory Memory;
-    public Console console; // reference to parent object
+    private co.aisaac.nes_java.cpu.Memory Memory;
+    public co.aisaac.nes_java.cpu.Console console; // reference to parent object
 
     public int Cycle;    // 0-340
     public int ScanLine; // 0-261, 0-239=visible, 240=post, 241-260=vblank, 261=pre
@@ -142,7 +88,7 @@ public class PPU {
     }
 
     // Constructor equivalent to NewPPU in Go.
-    public PPU(Console console) {
+    public PPU(co.aisaac.nes_java.cpu.Console console) {
         this.Memory = new PPUMemory(console);
         this.console = console;
         this.front = new BufferedImage(256, 240, BufferedImage.TYPE_INT_ARGB);

@@ -4,35 +4,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 
-// Mirror enum representing the two mirroring modes
-enum Mirror {
-    Single0,
-    Single1
-}
-
-// Cartridge class with necessary fields for Mapper7 functionality
-class Cartridge {
-    public Mirror Mirror;
-    public byte[] CHR;
-    public byte[] PRG;
-    public byte[] SRAM;
-
-    public Cartridge(byte[] CHR, byte[] PRG, byte[] SRAM) {
-        this.CHR = CHR;
-        this.PRG = PRG;
-        this.SRAM = SRAM;
-    }
-}
-
-// Mapper interface defining all required methods
-interface Mapper {
-    void save(ObjectOutputStream encoder) throws IOException;
-    void load(ObjectInputStream decoder) throws IOException, ClassNotFoundException;
-    void step();
-    byte read(int address);
-    void write(int address, byte value);
-}
-
 // Mapper7 class as defined in mapper7.go
 public class Mapper7 implements Mapper {
     public Cartridge Cartridge;

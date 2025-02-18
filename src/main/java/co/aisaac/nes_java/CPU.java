@@ -1,62 +1,31 @@
 package co.aisaac.nes_java;
 
+import co.aisaac.nes_java.memory.Memory;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.function.Consumer;
-
-// Define the Memory interface with required read and write methods
-interface Memory {
-    int read(int address);
-    void write(int address, int value);
-}
-
-// A simple implementation of the Memory interface
-class CPUMemory implements Memory {
-    private final byte[] mem = new byte[65536];
-    private final Console console;
-
-    public CPUMemory(Console console) {
-        this.console = console;
-    }
-
-    @Override
-    public int read(int address) {
-        // Ensure address is within bounds and return value as unsigned
-        return mem[address & 0xFFFF] & 0xFF;
-    }
-
-    @Override
-    public void write(int address, int value) {
-        mem[address & 0xFFFF] = (byte) (value & 0xFF);
-    }
-}
-
-// Dummy Console class for demonstration purposes
-class Console {
-    // Implementation details would go here.
-}
-
-// Functional interface for CPU instruction functions
-@FunctionalInterface
-interface Instruction {
-    void execute(stepInfo info);
-}
-
-// Class to hold step information for instructions
-class stepInfo {
-    public int address;
-    public int pc;
-    public int mode;
-
-    public stepInfo(int address, int pc, int mode) {
-        this.address = address;
-        this.pc = pc;
-        this.mode = mode;
-    }
-}
 
 public class CPU {
+    // Functional interface for CPU instruction functions
+    @FunctionalInterface
+    interface Instruction {
+        void execute(stepInfo info);
+    }
+
+    // Class to hold step information for instructions
+    class stepInfo {
+        public int address;
+        public int pc;
+        public int mode;
+
+        public stepInfo(int address, int pc, int mode) {
+            this.address = address;
+            this.pc = pc;
+            this.mode = mode;
+        }
+    }
+
     // memory interface
     public Memory memory;
     public long Cycles; // number of cycles
@@ -81,10 +50,9 @@ public class CPU {
     public static final int CPUFrequency = 1789773;
 
     // interrupt types
-    public static final int _ = 0; // unused in Go; placeholder
     public static final int interruptNone = 1;
-    public static final int interruptNMI  = 2;
-    public static final int interruptIRQ  = 3;
+    public static final int interruptNMI = 2;
+    public static final int interruptIRQ = 3;
 
     // addressing modes
     public static final int modeAbsolute = 1;
@@ -230,7 +198,7 @@ public class CPU {
 
     // createTable builds a function table for each instruction
     public void createTable() {
-        table = new Instruction[] {
+        table = new Instruction[]{
                 this::brk, this::ora, this::kil, this::slo, this::nop, this::ora, this::asl, this::slo,
                 this::php, this::ora, this::asl, this::anc, this::nop, this::ora, this::asl, this::slo,
                 this::bpl, this::ora, this::kil, this::slo, this::nop, this::ora, this::asl, this::slo,
@@ -331,7 +299,7 @@ public class CPU {
                 "%4X  %s %s %s  %s %28s" +
                         "A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%3d\n",
                 PC, w0, w1, w2, name, "",
-                A, X, Y, Flags(), SP, (int)((Cycles * 3) % 341)
+                A, X, Y, Flags(), SP, (int) ((Cycles * 3) % 341)
         );
     }
 
@@ -504,15 +472,13 @@ public class CPU {
             case modeAbsolute:
                 address = Read16(PC + 1);
                 break;
-            case modeAbsoluteX:
-            {
+            case modeAbsoluteX: {
                 int base = Read16(PC + 1);
                 address = base + X;
                 pageCrossed = pagesDiffer(address - X, address);
             }
             break;
-            case modeAbsoluteY:
-            {
+            case modeAbsoluteY: {
                 int base = Read16(PC + 1);
                 address = base + Y;
                 pageCrossed = pagesDiffer(address - Y, address);
@@ -527,8 +493,7 @@ public class CPU {
             case modeImplied:
                 address = 0;
                 break;
-            case modeIndexedIndirect:
-            {
+            case modeIndexedIndirect: {
                 int temp = Read(PC + 1) + X;
                 address = read16bug(temp & 0xFF);
             }
@@ -536,15 +501,13 @@ public class CPU {
             case modeIndirect:
                 address = read16bug(Read16(PC + 1));
                 break;
-            case modeIndirectIndexed:
-            {
+            case modeIndirectIndexed: {
                 int temp = Read(PC + 1) & 0xFF;
                 address = read16bug(temp) + Y;
                 pageCrossed = pagesDiffer(address - Y, address);
             }
             break;
-            case modeRelative:
-            {
+            case modeRelative: {
                 int offset = Read(PC + 1);
                 if (offset < 0x80) {
                     address = PC + 2 + offset;
@@ -572,7 +535,7 @@ public class CPU {
         stepInfo info = new stepInfo(address, PC, mode);
         table[opcode].execute(info);
 
-        return (int)(Cycles - cyclesBefore);
+        return (int) (Cycles - cyclesBefore);
     }
 
     // NMI - Non-Maskable Interrupt

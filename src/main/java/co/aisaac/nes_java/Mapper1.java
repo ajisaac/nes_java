@@ -4,40 +4,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
-
-// Required interface for Mapper implementations
-public interface Mapper {
-    void step();
-    byte read(int address);
-    void write(int address, byte value);
-    void save(ObjectOutputStream encoder) throws IOException;
-    void load(ObjectInputStream decoder) throws IOException, ClassNotFoundException;
-}
-
-//
-// Cartridge class with necessary fields and Mirror settings
-//
-class Cartridge {
-    public byte[] PRG;
-    public byte[] CHR;
-    public byte[] SRAM;
-    public Mirror Mirror;
-}
-
-//
-// Mirror enumeration for Cartridge mirroring modes
-//
-enum Mirror {
-    MirrorSingle0,
-    MirrorSingle1,
-    MirrorVertical,
-    MirrorHorizontal
-}
-
 //
 // Mapper1 implementation
 //
-public class Mapper1 implements Mapper {
+public class Mapper1 extends Mapper {
     // Embedded Cartridge reference
     public Cartridge Cartridge;
     public byte shiftRegister;
@@ -269,4 +239,10 @@ public class Mapper1 implements Mapper {
                 break;
         }
     }
+
+    @Override
+    public void Save(Encoder encoder) throws IOException {
+
+    }
+
 }

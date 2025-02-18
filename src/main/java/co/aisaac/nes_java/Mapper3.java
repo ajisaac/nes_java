@@ -4,28 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 
-public interface Mapper {
-    void Save(ObjectOutputStream encoder) throws IOException;
-    void Load(ObjectInputStream decoder) throws IOException;
-    void Step();
-    byte Read(int address);
-    void Write(int address, byte value);
-}
-
-public class Cartridge {
-    public byte[] PRG;
-    public byte[] CHR;
-    public byte[] SRAM;
-
-    // Constructor to initialize the Cartridge with PRG, CHR, and SRAM data.
-    public Cartridge(byte[] PRG, byte[] CHR, byte[] SRAM) {
-        this.PRG = PRG;
-        this.CHR = CHR;
-        this.SRAM = SRAM;
-    }
-}
-
-public class Mapper3 implements Mapper {
+public class Mapper3 extends Mapper {
     public Cartridge Cartridge;
     public int chrBank;
     public int prgBank1;

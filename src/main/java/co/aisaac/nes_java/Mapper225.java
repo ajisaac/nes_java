@@ -9,36 +9,6 @@ import java.util.logging.Level;
 // https://github.com/asfdfdfd/fceux/blob/master/src/boards/225.cpp
 // https://wiki.nesdev.com/w/index.php/INES_Mapper_225
 
-// Definition for Mirror constants
-class Mirror {
-    public static final int MirrorHorizontal = 0;
-    public static final int MirrorVertical = 1;
-}
-
-// Cartridge class with necessary fields
-class Cartridge {
-    public byte[] PRG;
-    public byte[] CHR;
-    public byte[] SRAM;
-    public int Mirror; // Represents mirroring mode
-
-    public Cartridge(byte[] PRG, byte[] CHR, byte[] SRAM) {
-        this.PRG = PRG;
-        this.CHR = CHR;
-        this.SRAM = SRAM;
-    }
-}
-
-// Mapper interface defining required methods
-interface Mapper {
-    void Save(ObjectOutputStream encoder) throws IOException;
-    void Load(ObjectInputStream decoder) throws IOException, ClassNotFoundException;
-    void Step();
-    byte Read(int address);
-    void Write(int address, byte value);
-}
-
-// Mapper225 class exactly translated from Golang
 public class Mapper225 implements Mapper {
     // Embedded Cartridge
     public Cartridge Cartridge;

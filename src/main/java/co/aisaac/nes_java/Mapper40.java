@@ -2,68 +2,15 @@ package co.aisaac.nes_java;
 
 import java.io.IOException;
 
-// Encoder interface mimicking gob.Encoder functionality
-public interface Encoder {
-    void encodeInt(int value) throws IOException;
-    // Additional encode methods can be added if needed
-}
-
-// Decoder interface mimicking gob.Decoder functionality
-public interface Decoder {
-    int decodeInt() throws IOException;
-    // Additional decode methods can be added if needed
-}
-
-// Mapper interface defining required methods
-public interface Mapper {
-    void Save(Encoder encoder) throws IOException;
-    void Load(Decoder decoder) throws IOException;
-    void Step();
-    byte Read(int address);
-    void Write(int address, byte value);
-}
-
-// Cartridge class holding CHR and PRG data and mapper number
-public class Cartridge {
-    public byte[] CHR;
-    public byte[] PRG;
-    public int Mapper;
-
-    public Cartridge(byte[] CHR, byte[] PRG, int Mapper) {
-        this.CHR = CHR;
-        this.PRG = PRG;
-        this.Mapper = Mapper;
-    }
-}
-
-// CPU class with triggerIRQ method as used in Mapper40
-public class CPU {
-    public void triggerIRQ() {
-        // Implementation for triggering IRQ
-        System.out.println("IRQ triggered.");
-    }
-}
-
-// Console class holding references to Cartridge and CPU
-public class Console {
-    public Cartridge Cartridge;
-    public CPU CPU;
-
-    public Console(Cartridge cartridge, CPU cpu) {
-        this.Cartridge = cartridge;
-        this.CPU = cpu;
-    }
-}
-
 // Mapper40 class implementing Mapper interface and translating the original Golang code
 public class Mapper40 implements Mapper {
     Cartridge Cartridge;          // corresponds to *Cartridge
-    Console console;              // corresponds to *Console
+    co.aisaac.nes_java.cpu.Console console;              // corresponds to *Console
     int bank;                     // bank field
     int cycles;                   // cycles field
 
     // Constructor equivalent to NewMapper40 in Golang
-    public Mapper40(Console console, Cartridge cartridge) {
+    public Mapper40(co.aisaac.nes_java.cpu.Console console, Cartridge cartridge) {
         this.Cartridge = cartridge;
         this.console = console;
         this.bank = 0;
@@ -71,7 +18,7 @@ public class Mapper40 implements Mapper {
     }
 
     // Static factory method equivalent to NewMapper40 in Golang
-    public static Mapper NewMapper40(Console console, Cartridge cartridge) {
+    public static Mapper NewMapper40(co.aisaac.nes_java.cpu.Console console, Cartridge cartridge) {
         return new Mapper40(console, cartridge);
     }
 

@@ -1,20 +1,12 @@
 package co.aisaac.nes_java;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HexFormat;
-
-package nes;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-/*
+
 // Cartridge struct translated from Go.
 // PRG: PRG-ROM banks
 // CHR: CHR-ROM banks
@@ -61,34 +53,34 @@ public class Cartridge {
         this.SRAM = (byte[]) decoder.Decode(byte[].class);
         this.Mirror = (Byte) decoder.Decode(Byte.class);
     }
+
+    // GobEncoder mimics the Go gob.Encoder functionality using Java ObjectOutputStream.
+    class GobEncoder {
+        private ObjectOutputStream out;
+
+        public GobEncoder(OutputStream os) throws IOException {
+            this.out = new ObjectOutputStream(os);
+        }
+
+        public void Encode(Object obj) throws IOException {
+            out.writeObject(obj);
+        }
+    }
+
+    // GobDecoder mimics the Go gob.Decoder functionality using Java ObjectInputStream.
+    class GobDecoder {
+        private ObjectInputStream in;
+
+        public GobDecoder(InputStream is) throws IOException {
+            this.in = new ObjectInputStream(is);
+        }
+
+        public Object Decode(Class<?> clazz) throws IOException, ClassNotFoundException {
+            return in.readObject();
+        }
+    }
+
 }
-
-// GobEncoder mimics the Go gob.Encoder functionality using Java ObjectOutputStream.
-class GobEncoder {
-    private ObjectOutputStream out;
-
-    public GobEncoder(OutputStream os) throws IOException {
-        this.out = new ObjectOutputStream(os);
-    }
-
-    public void Encode(Object obj) throws IOException {
-        out.writeObject(obj);
-    }
-}
-
-// GobDecoder mimics the Go gob.Decoder functionality using Java ObjectInputStream.
-class GobDecoder {
-    private ObjectInputStream in;
-
-    public GobDecoder(InputStream is) throws IOException {
-        this.in = new ObjectInputStream(is);
-    }
-
-    public Object Decode(Class<?> clazz) throws IOException, ClassNotFoundException {
-        return in.readObject();
-    }
-}
-*/
 /*
  Cartridge loaded from a .nes file
  http://wiki.nesdev.com/w/index.php/INES
@@ -100,7 +92,6 @@ class GobDecoder {
  CHR ROM data, if present (8192 * y bytes)
  PlayChoice INST-ROM, if present (0 or 8192 bytes)
  PlayChoice PROM, if present (16 bytes Data, 16 bytes CounterOut) (this is often missing; see PC10 ROM-Images for details)
- */
 public class Cartridge {
 
     // PRG-ROM
@@ -123,12 +114,12 @@ public class Cartridge {
 
     /**
      * The beginning of every ines file format
-     */
+     *
     final int MAGIC = 0x1a53454e;
 
     /**
      * The first 16 bytes
-     */
+     *
     byte[] header;
 
     public Cartridge(String file) throws IOException {
@@ -258,4 +249,4 @@ public class Cartridge {
     private int f10busConflicts() {
         return header[10] | 0b00100000;
     }
-}
+}*/

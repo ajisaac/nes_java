@@ -6,20 +6,24 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+
 public class Director {
-//    GLFWWindow window;
+    long window;
     Audio audio;
     View view;
     View menuView;
     double timestamp;
 
-//    public Director(GLFWWindow window, Audio audio) {
-        // director := Director{}
-        // director.window = window
-        // director.audio = audio
-//        this.window = window;
-//        this.audio = audio;
-//    }
+    public Director(long window) {
+        this.window = window;
+
+    }
 
     public void SetTitle(String title) {
 //        this.window.setTitle(title);
@@ -47,7 +51,7 @@ public class Director {
 //        }
     }
 
-    public void Start(String[] paths) {
+    public void start(String[] paths) {
 //        this.menuView = new MenuView(this, paths);
 //        if (paths.length == 1) {
 //            this.PlayGame(paths[0]);
@@ -57,7 +61,18 @@ public class Director {
 //        this.Run();
     }
 
-    public void Run() {
+    public void run() {
+        // Run the rendering loop until the user has attempted to close
+        // the window or has pressed the ESCAPE key.
+        while (!glfwWindowShouldClose(window)) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+
+            glfwSwapBuffers(window); // swap the color buffers
+
+            // Poll for window events. The key callback above will only be
+            // invoked during this call.
+            glfwPollEvents();
+        }
 //        while (!this.window.ShouldClose()) {
 //            this.Step();
 //            this.window.SwapBuffers();

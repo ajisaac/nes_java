@@ -24,21 +24,14 @@ public class Main {
     private static long window;
 
     public static void main(String[] args) {
-        Run(args);
-    }
-
-    public static void Run(String[] paths) {
-
-        System.out.println("Hello LWJGL " + Version.getVersion() + "!");
-
-
+        String[] paths = args;
 
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if ( !glfwInit() )
+        if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
 
         // Configure GLFW
@@ -48,17 +41,17 @@ public class Main {
 
         // Create the window
         window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
-        if ( window == NULL )
+        if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
         glfwSetKeyCallback(window, (window1, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
                 glfwSetWindowShouldClose(window1, true); // We will detect this in the rendering loop
         });
 
         // Get the thread stack and push a new frame
-        try ( MemoryStack stack = stackPush() ) {
+        try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1); // int*
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
@@ -94,20 +87,9 @@ public class Main {
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
         // run director
-//        Director director = new Director(window, null);
-//        director.start(paths);
+        Director director = new Director(window);
+        director.start(paths);
 
-        // Run the rendering loop until the user has attempted to close
-        // the window or has pressed the ESCAPE key.
-        while ( !glfwWindowShouldClose(window) ) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-
-            glfwSwapBuffers(window); // swap the color buffers
-
-            // Poll for window events. The key callback above will only be
-            // invoked during this call.
-            glfwPollEvents();
-        }
 
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(window);

@@ -1,10 +1,12 @@
 package co.aisaac.nes_java.memory;
 
-// PPU Memory Map
-public class ppuMemory implements co.aisaac.nes_java.cpu.Memory {
-    public co.aisaac.nes_java.cpu.Console console;
+import co.aisaac.nes_java.Console;
 
-    public ppuMemory(co.aisaac.nes_java.cpu.Console console) {
+// PPU Memory Map
+public class PPUMemory implements Memory {
+    public Console console;
+
+    public PPUMemory(Console console) {
         this.console = console;
     }
 

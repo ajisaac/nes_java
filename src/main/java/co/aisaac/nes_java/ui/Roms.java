@@ -8,9 +8,9 @@ public class Roms {
         Exception err = null;
         try {
             // Call NewConsole from the nes package to create a new Console instance.
-            Console console = NES.NewConsole(path);
+//            Console console = NES.NewConsole(path);
             // Step the console for 3 seconds.
-            console.stepSeconds(3);
+//            console.stepSeconds(3);
         } catch (Throwable r) {
             if (r instanceof Exception) {
                 err = (Exception) r;

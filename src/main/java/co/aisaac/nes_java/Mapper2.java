@@ -1,9 +1,11 @@
 package co.aisaac.nes_java;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 // Mapper2 class translation from Golang to Java
-public class Mapper2 implements Mapper {
+public class Mapper2 extends Mapper {
     // Corresponds to *Cartridge in Go; preserved as a public field
     public Cartridge Cartridge;
     public int prgBanks;
@@ -27,17 +29,19 @@ public class Mapper2 implements Mapper {
     }
 
     @Override
-    public void Save(Encoder encoder) throws IOException {
-        encoder.encode(this.prgBanks);
-        encoder.encode(this.prgBank1);
-        encoder.encode(this.prgBank2);
+    public void Save(ObjectOutputStream encoder) throws IOException {
+        // todo
+//        encoder.encode(this.prgBanks);
+//        encoder.encode(this.prgBank1);
+//        encoder.encode(this.prgBank2);
     }
 
     @Override
-    public void Load(Decoder decoder) throws IOException {
-        this.prgBanks = decoder.decodeInt();
-        this.prgBank1 = decoder.decodeInt();
-        this.prgBank2 = decoder.decodeInt();
+    public void Load(ObjectInputStream decoder) throws IOException {
+        // todo
+//        this.prgBanks = decoder.decodeInt();
+//        this.prgBank1 = decoder.decodeInt();
+//        this.prgBank2 = decoder.decodeInt();
     }
 
     @Override

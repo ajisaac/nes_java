@@ -1,34 +1,18 @@
 package co.aisaac.nes_java.ui;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_CLAMP;
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-
-import javax.imageio.ImageIO;
 
 public class Texture {
     public static final int textureSize = 4096;
@@ -43,7 +27,8 @@ public class Texture {
     public BlockingQueue<String> ch;
 
     public static Texture NewTexture() {
-        int texture = Util.createTexture();
+        /*
+        int texture = Utils.createTexture();
         glBindTexture(GL_TEXTURE_2D, texture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                 textureSize, textureSize,
@@ -54,6 +39,9 @@ public class Texture {
         t.lookup = new HashMap<String, Integer>();
         t.ch = new ArrayBlockingQueue<String>(1024);
         return t;
+
+         */
+        return null;
     }
 
     public void Purge() {
@@ -68,11 +56,11 @@ public class Texture {
     }
 
     public void Bind() {
-        glBindTexture(GL_TEXTURE_2D, this.texture);
+//        glBindTexture(GL_TEXTURE_2D, this.texture);
     }
 
     public void Unbind() {
-        glBindTexture(GL_TEXTURE_2D, 0);
+//        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     public float[] Lookup(String path) {
@@ -110,6 +98,7 @@ public class Texture {
     }
 
     public int load(String path) {
+        /*
         int index = this.lru();
         lookup.remove(this.reverse[index]);
         this.mark(index);
@@ -117,31 +106,34 @@ public class Texture {
         this.reverse[index] = path;
         int x = (index % textureDim) * 256;
         int y = (index / textureDim) * 256;
-        BufferedImage im = Util.copyImage(this.loadThumbnail(path));
+        BufferedImage im = Utils.copyImage(this.loadThumbnail(path));
         int width = im.getWidth();
         int height = im.getHeight();
-        ByteBuffer buffer = Util.convertImageData(im);
+        ByteBuffer buffer = Utils.convertImageData(im);
         glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height,
                 GL_RGBA, GL_UNSIGNED_BYTE, buffer);
         return index;
+         */
+        return 0;
     }
 
     public BufferedImage loadThumbnail(String romPath) {
+        /*
         File romFile = new File(romPath);
         String name = romFile.getName();
         if (name.endsWith(".nes")) {
             name = name.substring(0, name.length() - 4);
         }
         name = name.replace("_", " ");
-        name = Util.toTitleCase(name);
-        BufferedImage im = Util.CreateGenericThumbnail(name);
+        name = Utils.toTitleCase(name);
+        BufferedImage im = Utils.CreateGenericThumbnail(name);
         String hash;
         try {
-            hash = Util.hashFile(romPath);
+            hash = Utils.hashFile(romPath);
         } catch (Exception e) {
             return im;
         }
-        String filename = Util.thumbnailPath(hash);
+        String filename = Utils.thumbnailPath(hash);
         File thumbFile = new File(filename);
         if (!thumbFile.exists()) {
             new Thread(() -> {
@@ -151,17 +143,19 @@ public class Texture {
         } else {
             BufferedImage thumbnail = null;
             try {
-                thumbnail = Util.loadPNG(filename);
+                thumbnail = Utils.loadPNG(filename);
             } catch (Exception e) {
                 return im;
             }
             return thumbnail;
         }
+         */
+        return null;
     }
 
     public Exception downloadThumbnail(String romPath, String hash) {
-        String url = Util.thumbnailURL(hash);
-        String filename = Util.thumbnailPath(hash);
+        String url = Utils.thumbnailURL(hash);
+        String filename = Utils.thumbnailPath(hash);
         File file = new File(filename);
         File dir = file.getParentFile();
 

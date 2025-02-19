@@ -1,10 +1,12 @@
 package co.aisaac.nes_java.memory;
 
-// CPU Memory Map
-public class cpuMemory implements co.aisaac.nes_java.cpu.Memory {
-    public co.aisaac.nes_java.cpu.Console console;
+import co.aisaac.nes_java.Console;
 
-    public cpuMemory(co.aisaac.nes_java.cpu.Console console) {
+// CPU Memory Map
+public class CPUMemory implements Memory {
+    public Console console;
+
+    public CPUMemory(Console console) {
         this.console = console;
     }
 

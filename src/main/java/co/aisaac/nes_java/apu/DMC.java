@@ -92,7 +92,8 @@ class DMC {
     public void stepReader() {
         if (currentLength > 0 && bitCount == 0) {
             cpu.stall += 4;
-            shiftRegister = cpu.Read(currentAddress);
+            // todo
+            shiftRegister = (byte) cpu.Read(currentAddress);
             bitCount = 8;
             currentAddress++;
             if (currentAddress == 0) {

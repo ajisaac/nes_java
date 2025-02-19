@@ -4,8 +4,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 
+import static co.aisaac.nes_java.memory.PPUMemory.MirrorSingle0;
+import static co.aisaac.nes_java.memory.PPUMemory.MirrorSingle1;
+
 // Mapper7 class as defined in mapper7.go
-public class Mapper7 implements Mapper {
+public class Mapper7 extends Mapper {
     public Cartridge Cartridge;
     public int prgBank;
 
@@ -21,21 +24,21 @@ public class Mapper7 implements Mapper {
     }
 
     // Save method to encode the prgBank value using ObjectOutputStream
-    public void save(ObjectOutputStream encoder) throws IOException {
+    public void Save(ObjectOutputStream encoder) throws IOException {
         encoder.writeInt(this.prgBank);
     }
 
     // Load method to decode and assign the prgBank value using ObjectInputStream
-    public void load(ObjectInputStream decoder) throws IOException, ClassNotFoundException {
+    public void Load(ObjectInputStream decoder) throws IOException {
         this.prgBank = decoder.readInt();
     }
 
     // Empty Step method as in the original Golang code
-    public void step() {
+    public void Step() {
     }
 
-    // Read method corresponding to the Golang implementation
-    public byte read(int address) {
+    @Override
+    public byte Read(int address) {
         if (address < 0x2000) {
             return this.Cartridge.CHR[address];
         } else if (address >= 0x8000) {
@@ -49,16 +52,15 @@ public class Mapper7 implements Mapper {
         }
     }
 
-    // Write method corresponding to the Golang implementation
-    public void write(int address, byte value) {
+    public void Write(int address, byte value) {
         if (address < 0x2000) {
             this.Cartridge.CHR[address] = value;
         } else if (address >= 0x8000) {
             this.prgBank = value & 7;
             if ((value & 0x10) == 0x00) {
-                this.Cartridge.Mirror = Mirror.Single0;
+                this.Cartridge.Mirror = MirrorSingle0;
             } else if ((value & 0x10) == 0x10) {
-                this.Cartridge.Mirror = Mirror.Single1;
+                this.Cartridge.Mirror = MirrorSingle1;
             }
         } else if (address >= 0x6000) {
             int index = address - 0x6000;
@@ -67,4 +69,5 @@ public class Mapper7 implements Mapper {
             throw new RuntimeException(String.format("unhandled mapper7 write at address: 0x%04X", address));
         }
     }
+
 }

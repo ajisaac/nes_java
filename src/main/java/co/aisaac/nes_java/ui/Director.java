@@ -7,22 +7,22 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Director {
-    GLFWWindow window;
+//    GLFWWindow window;
     Audio audio;
     View view;
     View menuView;
     double timestamp;
 
-    public Director(GLFWWindow window, Audio audio) {
+//    public Director(GLFWWindow window, Audio audio) {
         // director := Director{}
         // director.window = window
         // director.audio = audio
-        this.window = window;
-        this.audio = audio;
-    }
+//        this.window = window;
+//        this.audio = audio;
+//    }
 
     public void SetTitle(String title) {
-        this.window.setTitle(title);
+//        this.window.setTitle(title);
     }
 
     public void SetView(View view) {
@@ -33,39 +33,37 @@ public class Director {
         if (this.view != null) {
             this.view.Enter();
         }
-        this.timestamp = GLFW.getTime();
+//        this.timestamp = GLFW.getTime();
     }
 
     // Equivalent to: func (d *Director) Step()
     public void Step() {
-        gl.Clear(gl.COLOR_BUFFER_BIT);
-        double currentTimestamp = GLFW.getTime();
-        double dt = currentTimestamp - this.timestamp;
-        this.timestamp = currentTimestamp;
-        if (this.view != null) {
-            this.view.Update(currentTimestamp, dt);
-        }
+//        gl.Clear(gl.COLOR_BUFFER_BIT);
+//        double currentTimestamp = GLFW.getTime();
+//        double dt = currentTimestamp - this.timestamp;
+//        this.timestamp = currentTimestamp;
+//        if (this.view != null) {
+//            this.view.Update(currentTimestamp, dt);
+//        }
     }
 
-    // Equivalent to: func (d *Director) Start(paths []string)
     public void Start(String[] paths) {
-        this.menuView = new MenuView(this, paths);
-        if (paths.length == 1) {
-            this.PlayGame(paths[0]);
-        } else {
-            this.ShowMenu();
-        }
-        this.Run();
+//        this.menuView = new MenuView(this, paths);
+//        if (paths.length == 1) {
+//            this.PlayGame(paths[0]);
+//        } else {
+//            this.ShowMenu();
+//        }
+//        this.Run();
     }
 
-    // Equivalent to: func (d *Director) Run()
     public void Run() {
-        while (!this.window.ShouldClose()) {
-            this.Step();
-            this.window.SwapBuffers();
-            GLFW.PollEvents();
-        }
-        this.SetView(null);
+//        while (!this.window.ShouldClose()) {
+//            this.Step();
+//            this.window.SwapBuffers();
+//            GLFW.PollEvents();
+//        }
+//        this.SetView(null);
     }
 
     // Equivalent to: func (d *Director) PlayGame(path string)
@@ -77,14 +75,14 @@ public class Director {
             System.err.println(err);
             System.exit(1);
         }
-        nes.Console console = null;
-        try {
-            console = nes.NewConsole(path);
-        } catch (Exception err) {
-            System.err.println(err);
-            System.exit(1);
-        }
-        this.SetView(new GameView(this, console, path, hash));
+//        nes.Console console = null;
+//        try {
+//            console = nes.NewConsole(path);
+//        } catch (Exception err) {
+//            System.err.println(err);
+//            System.exit(1);
+//        }
+//        this.SetView(new GameView(this, console, path, hash));
     }
 
     // Equivalent to: func (d *Director) ShowMenu()

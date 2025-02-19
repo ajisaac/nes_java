@@ -1,16 +1,18 @@
 package co.aisaac.nes_java;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 // Mapper40 class implementing Mapper interface and translating the original Golang code
-public class Mapper40 implements Mapper {
+public class Mapper40 extends Mapper {
     Cartridge Cartridge;          // corresponds to *Cartridge
-    co.aisaac.nes_java.cpu.Console console;              // corresponds to *Console
+    Console console;              // corresponds to *Console
     int bank;                     // bank field
     int cycles;                   // cycles field
 
     // Constructor equivalent to NewMapper40 in Golang
-    public Mapper40(co.aisaac.nes_java.cpu.Console console, Cartridge cartridge) {
+    public Mapper40(Console console, Cartridge cartridge) {
         this.Cartridge = cartridge;
         this.console = console;
         this.bank = 0;
@@ -18,20 +20,22 @@ public class Mapper40 implements Mapper {
     }
 
     // Static factory method equivalent to NewMapper40 in Golang
-    public static Mapper NewMapper40(co.aisaac.nes_java.cpu.Console console, Cartridge cartridge) {
+    public static Mapper NewMapper40(Console console, Cartridge cartridge) {
         return new Mapper40(console, cartridge);
     }
 
     // Save method to encode the mapper's state
-    public void Save(Encoder encoder) throws IOException {
-        encoder.encodeInt(this.bank);
-        encoder.encodeInt(this.cycles);
+    public void Save(ObjectOutputStream encoder) throws IOException {
+        // todo
+//        encoder.encodeInt(this.bank);
+//        encoder.encodeInt(this.cycles);
     }
 
     // Load method to decode and restore the mapper's state
-    public void Load(Decoder decoder) throws IOException {
-        this.bank = decoder.decodeInt();
-        this.cycles = decoder.decodeInt();
+    public void Load(ObjectInputStream decoder) throws IOException {
+        // todo
+//        this.bank = decoder.decodeInt();
+//        this.cycles = decoder.decodeInt();
     }
 
     // Step method simulating clock cycles and triggering IRQ when necessary

@@ -3,12 +3,18 @@ package co.aisaac.nes_java;
 
 import java.io.IOException;
 
+import static co.aisaac.nes_java.Console.NewConsole;
+
 public class GameView {
 
-    private final co.aisaac.nes_java.cpu.Console console;
+    private final Console console;
 
     GameView(String path) throws IOException {
-        console = new co.aisaac.nes_java.cpu.Console(path);
+        try {
+            console = NewConsole(path);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void update(long now, long delta) {
@@ -17,7 +23,7 @@ public class GameView {
         }
 
         updateControllers();
-        console.stepSeconds(delta);
+//        console.stepSeconds(delta);
 
     }
 

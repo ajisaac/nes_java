@@ -1,4 +1,4 @@
-package nes;
+package co.aisaac.nes_java;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -6,10 +6,13 @@ import java.io.ObjectOutputStream;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import static co.aisaac.nes_java.memory.PPUMemory.MirrorHorizontal;
+import static co.aisaac.nes_java.memory.PPUMemory.MirrorVertical;
+
 // https://github.com/asfdfdfd/fceux/blob/master/src/boards/225.cpp
 // https://wiki.nesdev.com/w/index.php/INES_Mapper_225
 
-public class Mapper225 implements Mapper {
+public class Mapper225 extends Mapper {
     // Embedded Cartridge
     public Cartridge Cartridge;
     public int chrBank;
@@ -38,7 +41,7 @@ public class Mapper225 implements Mapper {
     }
 
     // Load method equivalent to the Golang Load function using ObjectInputStream
-    public void Load(ObjectInputStream decoder) throws IOException, ClassNotFoundException {
+    public void Load(ObjectInputStream decoder) throws IOException {
         this.chrBank = decoder.readInt();
         this.prgBank1 = decoder.readInt();
         this.prgBank2 = decoder.readInt();
@@ -90,9 +93,9 @@ public class Mapper225 implements Mapper {
         }
         int mirr = (A >> 13) & 1;
         if (mirr == 1) {
-            this.Cartridge.Mirror = Mirror.MirrorHorizontal;
+            this.Cartridge.Mirror = MirrorHorizontal;
         } else {
-            this.Cartridge.Mirror = Mirror.MirrorVertical;
+            this.Cartridge.Mirror = MirrorVertical;
         }
 
         // fmt.Println(address, mirr, mode, prg)

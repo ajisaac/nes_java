@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import co.aisaac.nes_java.memory.Memory;
+import co.aisaac.nes_java.memory.PPUMemory;
+
 public class PPU {
     // Memory interface
-    private co.aisaac.nes_java.cpu.Memory Memory;
-    public co.aisaac.nes_java.cpu.Console console; // reference to parent object
+    private Memory Memory;
+    public Console console; // reference to parent object
 
     public int Cycle;    // 0-340
     public int ScanLine; // 0-261, 0-239=visible, 240=post, 241-260=vblank, 261=pre
@@ -88,7 +91,7 @@ public class PPU {
     }
 
     // Constructor equivalent to NewPPU in Go.
-    public PPU(co.aisaac.nes_java.cpu.Console console) {
+    public PPU(Console console) {
         this.Memory = new PPUMemory(console);
         this.console = console;
         this.front = new BufferedImage(256, 240, BufferedImage.TYPE_INT_ARGB);
@@ -395,7 +398,7 @@ public class PPU {
         CPU cpu = this.console.CPU;
         int address = (value & 0xFF) << 8;
         for (int i = 0; i < 256; i++) {
-            this.oamData[this.oamAddress & 0xFF] = cpu.Read(address);
+            this.oamData[this.oamAddress & 0xFF] = (byte) cpu.Read(address);
             this.oamAddress++;
             address++;
         }

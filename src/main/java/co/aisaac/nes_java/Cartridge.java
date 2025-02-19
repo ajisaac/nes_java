@@ -39,19 +39,21 @@ public class Cartridge {
     }
 
     // Save serializes selected Cartridge fields using a GobEncoder.
-    public void Save(GobEncoder encoder) throws IOException {
-        encoder.Encode(this.PRG);
-        encoder.Encode(this.CHR);
-        encoder.Encode(this.SRAM);
-        encoder.Encode(this.Mirror);
+    public void Save(ObjectOutputStream encoder) throws IOException {
+        // todo
+//        encoder.Encode(this.PRG);
+//        encoder.Encode(this.CHR);
+//        encoder.Encode(this.SRAM);
+//        encoder.Encode(this.Mirror);
     }
 
     // Load deserializes selected Cartridge fields using a GobDecoder.
-    public void Load(GobDecoder decoder) throws IOException, ClassNotFoundException {
-        this.PRG = (byte[]) decoder.Decode(byte[].class);
-        this.CHR = (byte[]) decoder.Decode(byte[].class);
-        this.SRAM = (byte[]) decoder.Decode(byte[].class);
-        this.Mirror = (Byte) decoder.Decode(Byte.class);
+    public void Load(ObjectInputStream decoder) throws IOException, ClassNotFoundException {
+        // todo
+//        this.PRG = (byte[]) decoder.Decode(byte[].class);
+//        this.CHR = (byte[]) decoder.Decode(byte[].class);
+//        this.SRAM = (byte[]) decoder.Decode(byte[].class);
+//        this.Mirror = (Byte) decoder.Decode(Byte.class);
     }
 
     // GobEncoder mimics the Go gob.Encoder functionality using Java ObjectOutputStream.

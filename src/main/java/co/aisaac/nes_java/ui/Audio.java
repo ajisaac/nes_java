@@ -4,7 +4,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class Audio {
-    public portaudio.Stream stream;
+//    public portaudio.Stream stream;
     public double sampleRate;
     public int outputChannels;
     public BlockingQueue<Float> channel;
@@ -19,21 +19,21 @@ public class Audio {
     }
 
     public void Start() throws Exception {
-        portaudio.HostApi host = PortAudio.DefaultHostApi();
-        portaudio.Parameters parameters = PortAudio.HighLatencyParameters(null, host.defaultOutputDevice);
-        portaudio.Stream stream = PortAudio.OpenStream(parameters, new portaudio.PortAudioCallback() {
-            public void Callback(float[] out) {
-                Audio.this.Callback(out);
-            }
-        });
-        stream.Start();
-        this.stream = stream;
-        this.sampleRate = parameters.SampleRate;
-        this.outputChannels = parameters.Output.Channels;
+//        portaudio.HostApi host = PortAudio.DefaultHostApi();
+//        portaudio.Parameters parameters = PortAudio.HighLatencyParameters(null, host.defaultOutputDevice);
+//        portaudio.Stream stream = PortAudio.OpenStream(parameters, new portaudio.PortAudioCallback() {
+//            public void Callback(float[] out) {
+//                Audio.this.Callback(out);
+//            }
+//        });
+//        stream.Start();
+//        this.stream = stream;
+//        this.sampleRate = parameters.SampleRate;
+//        this.outputChannels = parameters.Output.Channels;
     }
 
     public void Stop() throws Exception {
-        this.stream.Close();
+//        this.stream.Close();
     }
 
     public void Callback(float[] out) {

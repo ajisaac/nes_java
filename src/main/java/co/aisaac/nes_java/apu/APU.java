@@ -1,7 +1,7 @@
 package co.aisaac.nes_java.apu;
 
 import co.aisaac.nes_java.Console;
-import co.aisaac.nes_java.FilterChain;
+import co.aisaac.nes_java.filter.FilterChain;
 
 import java.io.*;
 import java.util.concurrent.*;
@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 // APU
 
 public class APU {
-    public co.aisaac.nes_java.Console console;
+    public Console console;
     public BlockingQueue<Float> channel;
     public double sampleRate;
     public Pulse pulse1 = new Pulse();
@@ -318,13 +318,3 @@ public class APU {
         }
     }
 }
-
-// Pulse
-
-// Triangle
-
-// Noise
-
-// DMC
-
-// End of code

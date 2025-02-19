@@ -2,10 +2,13 @@ package co.aisaac.nes_java;
 
 import java.io.*;
 
+import static co.aisaac.nes_java.memory.PPUMemory.MirrorHorizontal;
+import static co.aisaac.nes_java.memory.PPUMemory.MirrorVertical;
+
 // Mapper4 class translated from Golang
 public class Mapper4 extends Mapper {
     public Cartridge Cartridge;
-    public co.aisaac.nes_java.cpu.Console console;
+    public Console console;
     public byte register;
     public byte[] registers = new byte[8];
     public byte prgMode;
@@ -17,7 +20,7 @@ public class Mapper4 extends Mapper {
     public boolean irqEnable;
 
     // Constructor equivalent to NewMapper4 in Golang
-    public Mapper4(co.aisaac.nes_java.cpu.Console console, Cartridge cartridge) {
+    public Mapper4(Console console, Cartridge cartridge) {
         this.Cartridge = cartridge;
         this.console = console;
         this.prgOffsets[0] = prgBankOffset(0);
@@ -26,7 +29,7 @@ public class Mapper4 extends Mapper {
         this.prgOffsets[3] = prgBankOffset(-1);
     }
 
-    public static Mapper NewMapper4(co.aisaac.nes_java.cpu.Console console, Cartridge cartridge) {
+    public static Mapper NewMapper4(Console console, Cartridge cartridge) {
         return new Mapper4(console, cartridge);
     }
 
@@ -46,7 +49,7 @@ public class Mapper4 extends Mapper {
         encoder.writeBoolean(irqEnable);
     }
 
-    public void Load(ObjectInputStream decoder) throws IOException, ClassNotFoundException {
+    public void Load(ObjectInputStream decoder) throws IOException {
         register = decoder.readByte();
         decoder.readFully(registers);
         prgMode = decoder.readByte();
@@ -153,10 +156,10 @@ public class Mapper4 extends Mapper {
     public void writeMirror(byte value) {
         switch (value & 1) {
             case 0:
-                Cartridge.Mirror = Cartridge.MirrorVertical;
+                Cartridge.Mirror = MirrorVertical;
                 break;
             case 1:
-                Cartridge.Mirror = Cartridge.MirrorHorizontal;
+                Cartridge.Mirror = MirrorHorizontal;
                 break;
         }
     }

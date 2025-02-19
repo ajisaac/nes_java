@@ -8,22 +8,20 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import javax.imageio.ImageIO;
 
 public class Font {
     // global variable fontMask of type BufferedImage
     public static BufferedImage fontMask;
 
-    // static initializer block equivalent to Go's init() function
     static {
         BufferedImage im = null;
-        try {
-            im = ImageIO.read(new ByteArrayInputStream(fontData));
-        } catch (IOException err) {
-            System.err.println(err);
-            System.exit(1);
-        }
+//        try {
+//            im = ImageIO.read(new ByteArrayInputStream(fontData));
+//        } catch (IOException err) {
+//            System.err.println(err);
+//            System.exit(1);
+//        }
         Rectangle bounds = im.getRaster().getBounds();
         int width = bounds.width;
         int height = bounds.height;

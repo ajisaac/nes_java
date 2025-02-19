@@ -40,82 +40,82 @@ public class MenuView implements View {
     }
 
     public void checkButtons() {
-        GLFWWindow window = this.director.window;
-        boolean[] k1 = Utils.readKeys(window, false);
-        boolean[] j1 = Utils.readJoystick(glfw.Joystick1, false);
-        boolean[] j2 = Utils.readJoystick(glfw.Joystick2, false);
-        boolean[] buttonsCombined = Utils.combineButtons(Utils.combineButtons(j1, j2), k1);
-        double now = glfw.GetTime();
-        for (int i = 0; i < buttonsCombined.length; i++) {
-            if (buttonsCombined[i] && !this.buttons[i]) {
-                this.times[i] = now + UIConstants.initialDelay;
-                this.onPress(i);
-            } else if (!buttonsCombined[i] && this.buttons[i]) {
-                this.onRelease(i);
-            } else if (buttonsCombined[i] && now >= this.times[i]) {
-                this.times[i] = now + UIConstants.repeatDelay;
-                this.onPress(i);
-            }
-        }
-        this.buttons = buttonsCombined;
+//        GLFWWindow window = this.director.window;
+//        boolean[] k1 = Utils.readKeys(window, false);
+//        boolean[] j1 = Utils.readJoystick(glfw.Joystick1, false);
+//        boolean[] j2 = Utils.readJoystick(glfw.Joystick2, false);
+//        boolean[] buttonsCombined = Utils.combineButtons(Utils.combineButtons(j1, j2), k1);
+//        double now = glfw.GetTime();
+//        for (int i = 0; i < buttonsCombined.length; i++) {
+//            if (buttonsCombined[i] && !this.buttons[i]) {
+//                this.times[i] = now + UIConstants.initialDelay;
+//                this.onPress(i);
+//            } else if (!buttonsCombined[i] && this.buttons[i]) {
+//                this.onRelease(i);
+//            } else if (buttonsCombined[i] && now >= this.times[i]) {
+//                this.times[i] = now + UIConstants.repeatDelay;
+//                this.onPress(i);
+//            }
+//        }
+//        this.buttons = buttonsCombined;
     }
 
     public void onPress(int index) {
-        switch (index) {
-            case nes.ButtonUp:
-                this.j--;
-                break;
-            case nes.ButtonDown:
-                this.j++;
-                break;
-            case nes.ButtonLeft:
-                this.i--;
-                break;
-            case nes.ButtonRight:
-                this.i++;
-                break;
-            default:
-                return;
-        }
-        this.t = glfw.GetTime();
+//        switch (index) {
+//            case nes.ButtonUp:
+//                this.j--;
+//                break;
+//            case nes.ButtonDown:
+//                this.j++;
+//                break;
+//            case nes.ButtonLeft:
+//                this.i--;
+//                break;
+//            case nes.ButtonRight:
+//                this.i++;
+//                break;
+//            default:
+//                return;
+//        }
+//        this.t = glfw.GetTime();
     }
 
     public void onRelease(int index) {
-        switch (index) {
-            case nes.ButtonStart:
-                this.onSelect();
-                break;
-            default:
-                return;
-        }
+//        switch (index) {
+//            case nes.ButtonStart:
+//                this.onSelect();
+//                break;
+//            default:
+//                return;
+//        }
     }
 
     public void onSelect() {
-        int index = this.nx * (this.j + this.scroll) + this.i;
-        if (index >= this.paths.size()) {
-            return;
-        }
-        this.director.PlayGame(this.paths.get(index));
+//        int index = this.nx * (this.j + this.scroll) + this.i;
+//        if (index >= this.paths.size()) {
+//            return;
+//        }
+//        this.director.PlayGame(this.paths.get(index));
     }
 
-    public void onChar(GLFWWindow window, char ch) {
-        double now = glfw.GetTime();
-        if (now > this.typeTime) {
-            this.typeBuffer = "";
-        }
-        this.typeTime = now + UIConstants.typeDelay;
-        // Append new character and convert to lower case.
-        this.typeBuffer = (this.typeBuffer == null ? "" : this.typeBuffer).toLowerCase(Locale.ENGLISH) + Character.toString(ch).toLowerCase(Locale.ENGLISH);
-        for (int index = 0; index < this.paths.size(); index++) {
-            String p = this.paths.get(index);
-            File f = new File(p);
-            String name = f.getName().toLowerCase(Locale.ENGLISH);
-            if (name.compareTo(this.typeBuffer) >= 0) {
-                this.highlight(index);
-                return;
-            }
-        }
-    }
+//    public void onChar(GLFWWindow window, char ch) {
+//        double now = glfw.GetTime();
+//        if (now > this.typeTime) {
+//            this.typeBuffer = "";
+//        }
+//        this.typeTime = now + UIConstants.typeDelay;
+//         Append new character and convert to lower case.
+//        this.typeBuffer = (this.typeBuffer == null ? "" : this.typeBuffer).toLowerCase(Locale.ENGLISH) + Character.toString(ch).toLowerCase(Locale.ENGLISH);
+//        for (int index = 0; index < this.paths.size(); index++) {
+//            String p = this.paths.get(index);
+//            File f = new File(p);
+//            String name = f.getName().toLowerCase(Locale.ENGLISH);
+//            if (name.compareTo(this.typeBuffer) >= 0) {
+//                this.highlight(index);
+//                return;
+//            }
+//        }
+//    }
 
     public void highlight(int index) {
         this.scroll = index / this.nx - (this.ny - 1) / 2;
@@ -128,19 +128,20 @@ public class MenuView implements View {
         // In real GL, ClearColor would set the clear color.
         // Here we simulate by a no-op.
         // gl.ClearColor(0.333, 0.333, 0.333, 1) is omitted because our gl stub does not support it.
-        this.director.SetTitle("Select Game");
-        this.director.window.SetCharCallback(new CharCallback() {
-            public void invoke(GLFWWindow window, char ch) {
-                onChar(window, ch);
-            }
-        });
+//        this.director.SetTitle("Select Game");
+//        this.director.window.SetCharCallback(new CharCallback() {
+//            public void invoke(GLFWWindow window, char ch) {
+//                onChar(window, ch);
+//            }
+//        });
     }
 
     public void Exit() {
-        this.director.window.SetCharCallback(null);
+//        this.director.window.SetCharCallback(null);
     }
 
     public void Update(double t, double dt) {
+        /*
         this.checkButtons();
         this.texture.Purge();
         GLFWWindow window = this.director.window;
@@ -188,7 +189,7 @@ public class MenuView implements View {
             float y = (float) (oy + this.j * sy);
             UIUtil.drawSelection(x, y, 8, 4);
         }
-        gl.PopMatrix();
+        gl.PopMatrix();*/
     }
 
     public void clampSelection() {
@@ -238,6 +239,7 @@ public class MenuView implements View {
 
     // UI utility functions that were package-level in Go.
     public static void drawThumbnail(float x, float y, float tx, float ty, float tw, float th) {
+        /*
         float sx = x + 4;
         float sy = y + 4;
         gl.Disable(gl.TEXTURE_2D);
@@ -260,9 +262,11 @@ public class MenuView implements View {
         gl.TexCoord2f(tx, ty + th);
         gl.Vertex2f(x, y + 240);
         gl.End();
+         */
     }
 
     public static void drawSelection(float x, float y, float p, float w) {
+        /*
         gl.LineWidth(w);
         gl.Begin(gl.LINE_STRIP);
         gl.Vertex2f(x - p, y - p);
@@ -271,5 +275,6 @@ public class MenuView implements View {
         gl.Vertex2f(x - p, y + 240 + p);
         gl.Vertex2f(x - p, y - p);
         gl.End();
+         */
     }
 }

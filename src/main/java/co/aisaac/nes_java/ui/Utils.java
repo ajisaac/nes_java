@@ -3,6 +3,8 @@ package co.aisaac.nes_java.ui;
 //import org.lwjgl.glfw.GLFW;
 //import org.lwjgl.opengl.GL11;
 
+import co.aisaac.nes_java.Controller;
+
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
@@ -27,7 +29,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
-public class Util {
+public class Utils {
 
     // Global variable equivalent to var homeDir string
     public static String homeDir;
@@ -70,68 +72,73 @@ public class Util {
     }
 
     // readKey checks if the given key is pressed in the GLFW window.
-    public static boolean readKey(long window, int key) {
-        return GLFW.glfwGetKey(window, key) == GLFW.GLFW_PRESS;
-    }
+//    public static boolean readKey(long window, int key) {
+//        return GLFW.glfwGetKey(window, key) == GLFW.GLFW_PRESS;
+//    }
 
     // readKeys returns an array representing the state of 8 buttons.
-    public static boolean[] readKeys(long window, boolean turbo) {
-        boolean[] result = new boolean[8];
-        result[NES.ButtonA] = readKey(window, GLFW.GLFW_KEY_Z) || (turbo && readKey(window, GLFW.GLFW_KEY_A));
-        result[NES.ButtonB] = readKey(window, GLFW.GLFW_KEY_X) || (turbo && readKey(window, GLFW.GLFW_KEY_S));
-        result[NES.ButtonSelect] = readKey(window, GLFW.GLFW_KEY_RIGHT_SHIFT);
-        result[NES.ButtonStart] = readKey(window, GLFW.GLFW_KEY_ENTER);
-        result[NES.ButtonUp] = readKey(window, GLFW.GLFW_KEY_UP);
-        result[NES.ButtonDown] = readKey(window, GLFW.GLFW_KEY_DOWN);
-        result[NES.ButtonLeft] = readKey(window, GLFW.GLFW_KEY_LEFT);
-        result[NES.ButtonRight] = readKey(window, GLFW.GLFW_KEY_RIGHT);
-        return result;
-    }
+//    public static boolean[] readKeys(long window, boolean turbo) {
+//        boolean[] result = new boolean[8];
+//        result[Controller.ButtonA] = readKey(window, GLFW.GLFW_KEY_Z) || (turbo && readKey(window, GLFW.GLFW_KEY_A));
+//        result[Controller.ButtonB] = readKey(window, GLFW.GLFW_KEY_X) || (turbo && readKey(window, GLFW.GLFW_KEY_S));
+//        result[Controller.ButtonSelect] = readKey(window, GLFW.GLFW_KEY_RIGHT_SHIFT);
+//        result[Controller.ButtonStart] = readKey(window, GLFW.GLFW_KEY_ENTER);
+//        result[Controller.ButtonUp] = readKey(window, GLFW.GLFW_KEY_UP);
+//        result[Controller.ButtonDown] = readKey(window, GLFW.GLFW_KEY_DOWN);
+//        result[Controller.ButtonLeft] = readKey(window, GLFW.GLFW_KEY_LEFT);
+//        result[Controller.ButtonRight] = readKey(window, GLFW.GLFW_KEY_RIGHT);
+//        return result;
+//    }
 
     // readJoystick returns an array representing the state of 8 buttons from the joystick.
-    public static boolean[] readJoystick(int joy, boolean turbo) {
-        boolean[] result = new boolean[8];
-        if (!GLFW.glfwJoystickPresent(joy)) {
-            return result;
-        }
-        String joyname = GLFW.glfwGetJoystickName(joy);
-        float[] axes = GLFW.glfwGetJoystickAxes(joy);
-        byte[] buttons = GLFW.glfwGetJoystickButtons(joy);
-        if ("PLAYSTATION(R)3 Controller".equals(joyname)) {
-            result[NES.ButtonA] = (buttons[14] == 1) || (turbo && (buttons[2] == 1));
-            result[NES.ButtonB] = (buttons[13] == 1) || (turbo && (buttons[3] == 1));
-            result[NES.ButtonSelect] = (buttons[0] == 1);
-            result[NES.ButtonStart] = (buttons[3] == 1);
-            result[NES.ButtonUp] = (buttons[4] == 1) || (axes[1] < -0.5f);
-            result[NES.ButtonDown] = (buttons[6] == 1) || (axes[1] > 0.5f);
-            result[NES.ButtonLeft] = (buttons[7] == 1) || (axes[0] < -0.5f);
-            result[NES.ButtonRight] = (buttons[5] == 1) || (axes[0] > 0.5f);
-            return result;
-        }
-        if (buttons.length < 8) {
-            return result;
-        }
-        result[NES.ButtonA] = (buttons[0] == 1) || (turbo && (buttons[2] == 1));
-        result[NES.ButtonB] = (buttons[1] == 1) || (turbo && (buttons[3] == 1));
-        result[NES.ButtonSelect] = (buttons[6] == 1);
-        result[NES.ButtonStart] = (buttons[7] == 1);
-        result[NES.ButtonUp] = axes[1] < -0.5f;
-        result[NES.ButtonDown] = axes[1] > 0.5f;
-        result[NES.ButtonLeft] = axes[0] < -0.5f;
-        result[NES.ButtonRight] = axes[0] > 0.5f;
-        return result;
-    }
+//    public static boolean[] readJoystick(int joy, boolean turbo) {
+//        boolean[] result = new boolean[8];
+//        if (!GLFW.glfwJoystickPresent(joy)) {
+//            return result;
+//        }
+        // todo
+//        String joyname = GLFW.glfwGetJoystickName(joy);
+//        float[] axes = GLFW.glfwGetJoystickAxes(joy);
+//        byte[] buttons = GLFW.glfwGetJoystickButtons(joy);
+//        String joyname = "";
+//        float[] axes = new float[1];
+//        byte[] buttons = new byte[]{3};
+//        if ("PLAYSTATION(R)3 Controller".equals(joyname)) {
+//            result[Controller.ButtonA] = (buttons[14] == 1) || (turbo && (buttons[2] == 1));
+//            result[Controller.ButtonB] = (buttons[13] == 1) || (turbo && (buttons[3] == 1));
+//            result[Controller.ButtonSelect] = (buttons[0] == 1);
+//            result[Controller.ButtonStart] = (buttons[3] == 1);
+//            result[Controller.ButtonUp] = (buttons[4] == 1) || (axes[1] < -0.5f);
+//            result[Controller.ButtonDown] = (buttons[6] == 1) || (axes[1] > 0.5f);
+//            result[Controller.ButtonLeft] = (buttons[7] == 1) || (axes[0] < -0.5f);
+//            result[Controller.ButtonRight] = (buttons[5] == 1) || (axes[0] > 0.5f);
+//            return result;
+//        }
+//        if (buttons.length < 8) {
+//            return result;
+//        }
+//        result[Controller.ButtonA] = (buttons[0] == 1) || (turbo && (buttons[2] == 1));
+//        result[Controller.ButtonB] = (buttons[1] == 1) || (turbo && (buttons[3] == 1));
+//        result[Controller.ButtonSelect] = (buttons[6] == 1);
+//        result[Controller.ButtonStart] = (buttons[7] == 1);
+//        result[Controller.ButtonUp] = axes[1] < -0.5f;
+//        result[Controller.ButtonDown] = axes[1] > 0.5f;
+//        result[Controller.ButtonLeft] = axes[0] < -0.5f;
+//        result[Controller.ButtonRight] = axes[0] > 0.5f;
+//        return result;
+//    }
 
     // joystickReset checks if the joystick reset buttons are pressed.
     public static boolean joystickReset(int joy) {
-        if (!GLFW.glfwJoystickPresent(joy)) {
-            return false;
-        }
-        byte[] buttons = GLFW.glfwGetJoystickButtons(joy);
-        if (buttons.length < 6) {
-            return false;
-        }
-        return (buttons[4] == 1 && buttons[5] == 1);
+//        if (!GLFW.glfwJoystickPresent(joy)) {
+//            return false;
+//        }
+//        byte[] buttons = GLFW.glfwGetJoystickButtons(joy);
+//        if (buttons.length < 6) {
+//            return false;
+//        }
+//        return (buttons[4] == 1 && buttons[5] == 1);
+        return false;
     }
 
     // combineButtons returns the logical OR combination of two button arrays.
@@ -157,16 +164,17 @@ public class Util {
         return ret;
     }
 
-    // createTexture creates an OpenGL texture and sets its parameters.
     public static int createTexture() {
-        int texture = GL11.glGenTextures();
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-        return texture;
+        // todo
+//        int texture = GL11.glGenTextures();
+//        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+//        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
+//        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+//        return texture;
+        return 0;
     }
 
     // setTexture sets the texture image data based on the provided BufferedImage.
@@ -174,8 +182,8 @@ public class Util {
         int width = im.getWidth();
         int height = im.getHeight();
         ByteBuffer buffer = convertImageToByteBuffer(im);
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height,
-                0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+//        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height,
+//                0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
     }
 
     // Helper function to convert a BufferedImage to a ByteBuffer in RGBA order.
@@ -223,18 +231,18 @@ public class Util {
     // saveGIF saves an animated GIF made from the given frames to the specified path.
     public static void saveGIF(String path, List<BufferedImage> frames) throws IOException {
         // Build palette from NES.Palette (assuming NES.Palette is a Color[]).
-        Color[] nesPalette = NES.Palette;
-        int paletteSize = nesPalette.length;
-        byte[] r = new byte[paletteSize];
-        byte[] g = new byte[paletteSize];
-        byte[] b = new byte[paletteSize];
-        for (int i = 0; i < paletteSize; i++) {
-            Color c = nesPalette[i];
-            r[i] = (byte) c.getRed();
-            g[i] = (byte) c.getGreen();
-            b[i] = (byte) c.getBlue();
-        }
-        IndexColorModel colorModel = new IndexColorModel(8, paletteSize, r, g, b);
+//        Color[] nesPalette = NES.Palette;
+//        int paletteSize = nesPalette.length;
+//        byte[] r = new byte[paletteSize];
+//        byte[] g = new byte[paletteSize];
+//        byte[] b = new byte[paletteSize];
+//        for (int i = 0; i < paletteSize; i++) {
+//            Color c = nesPalette[i];
+//            r[i] = (byte) c.getRed();
+//            g[i] = (byte) c.getGreen();
+//            b[i] = (byte) c.getBlue();
+//        }
+//        IndexColorModel colorModel = new IndexColorModel(8, paletteSize, r, g, b);
 
         // Create a list of framed images after processing (only every 3rd frame).
         List<BufferedImage> gifFrames = new ArrayList<>();
@@ -243,11 +251,11 @@ public class Util {
             if (i % 3 != 0) {
                 continue;
             }
-            BufferedImage dst = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, colorModel);
-            Graphics2D g2 = dst.createGraphics();
-            g2.drawImage(src, 0, 0, null);
-            g2.dispose();
-            gifFrames.add(dst);
+//            BufferedImage dst = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, colorModel);
+//            Graphics2D g2 = dst.createGraphics();
+//            g2.drawImage(src, 0, 0, null);
+//            g2.dispose();
+//            gifFrames.add(dst);
         }
         if (gifFrames.isEmpty()) {
             return;
@@ -347,29 +355,29 @@ public class Util {
             this.outputStream = outputStream;
             gifWriter = ImageIO.getImageWritersBySuffix("gif").next();
             imageWriteParam = gifWriter.getDefaultWriteParam();
-            javax.imageio.metadata.IIOMetadata metadata = gifWriter.getDefaultImageMetadata(ImageTypeSpecifier.createFromBufferedImageType(imageType), imageWriteParam);
+//            javax.imageio.metadata.IIOMetadata metadata = gifWriter.getDefaultImageMetadata(ImageTypeSpecifier.createFromBufferedImageType(imageType), imageWriteParam);
 
-            String metaFormatName = metadata.getNativeMetadataFormatName();
+//            String metaFormatName = metadata.getNativeMetadataFormatName();
 
-            javax.imageio.metadata.IIOMetadataNode root = (javax.imageio.metadata.IIOMetadataNode) metadata.getAsTree(metaFormatName);
-            javax.imageio.metadata.IIOMetadataNode graphicsControlExtensionNode = getNode(root, "GraphicControlExtension");
-            graphicsControlExtensionNode.setAttribute("disposalMethod", "none");
-            graphicsControlExtensionNode.setAttribute("userInputFlag", "FALSE");
-            graphicsControlExtensionNode.setAttribute("transparentColorFlag", "FALSE");
-            graphicsControlExtensionNode.setAttribute("delayTime", Integer.toString(timeBetweenFramesCS));
-            graphicsControlExtensionNode.setAttribute("transparentColorIndex", "0");
+//            javax.imageio.metadata.IIOMetadataNode root = (javax.imageio.metadata.IIOMetadataNode) metadata.getAsTree(metaFormatName);
+//            javax.imageio.metadata.IIOMetadataNode graphicsControlExtensionNode = getNode(root, "GraphicControlExtension");
+//            graphicsControlExtensionNode.setAttribute("disposalMethod", "none");
+//            graphicsControlExtensionNode.setAttribute("userInputFlag", "FALSE");
+//            graphicsControlExtensionNode.setAttribute("transparentColorFlag", "FALSE");
+//            graphicsControlExtensionNode.setAttribute("delayTime", Integer.toString(timeBetweenFramesCS));
+//            graphicsControlExtensionNode.setAttribute("transparentColorIndex", "0");
 
-            javax.imageio.metadata.IIOMetadataNode appEntensionsNode = getNode(root, "ApplicationExtensions");
-            javax.imageio.metadata.IIOMetadataNode appExtensionNode = new javax.imageio.metadata.IIOMetadataNode("ApplicationExtension");
-            appExtensionNode.setAttribute("applicationID", "NETSCAPE");
-            appExtensionNode.setAttribute("authenticationCode", "2.0");
-            int loop = loopContinuously ? 0 : 1;
-            appExtensionNode.setUserObject(new byte[]{ 0x1, (byte) (loop & 0xFF), (byte) ((loop >> 8) & 0xFF) });
-            appEntensionsNode.appendChild(appExtensionNode);
-            metadata.setFromTree(metaFormatName, root);
-            this.imageMetaData = metadata;
-            gifWriter.setOutput(outputStream);
-            gifWriter.prepareWriteSequence(null);
+//            javax.imageio.metadata.IIOMetadataNode appEntensionsNode = getNode(root, "ApplicationExtensions");
+//            javax.imageio.metadata.IIOMetadataNode appExtensionNode = new javax.imageio.metadata.IIOMetadataNode("ApplicationExtension");
+//            appExtensionNode.setAttribute("applicationID", "NETSCAPE");
+//            appExtensionNode.setAttribute("authenticationCode", "2.0");
+//            int loop = loopContinuously ? 0 : 1;
+//            appExtensionNode.setUserObject(new byte[]{ 0x1, (byte) (loop & 0xFF), (byte) ((loop >> 8) & 0xFF) });
+//            appEntensionsNode.appendChild(appExtensionNode);
+//            metadata.setFromTree(metaFormatName, root);
+//            this.imageMetaData = metadata;
+//            gifWriter.setOutput(outputStream);
+//            gifWriter.prepareWriteSequence(null);
         }
 
         private static javax.imageio.metadata.IIOMetadataNode getNode(javax.imageio.metadata.IIOMetadataNode rootNode, String nodeName) {

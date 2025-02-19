@@ -4,6 +4,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
+
+import static co.aisaac.nes_java.memory.PPUMemory.MirrorHorizontal;
+import static co.aisaac.nes_java.memory.PPUMemory.MirrorSingle0;
+import static co.aisaac.nes_java.memory.PPUMemory.MirrorSingle1;
+import static co.aisaac.nes_java.memory.PPUMemory.MirrorVertical;
+
 //
 // Mapper1 implementation
 //
@@ -141,16 +147,16 @@ public class Mapper1 extends Mapper {
         byte mirror = (byte)(value & 3);
         switch (mirror) {
             case 0:
-                Cartridge.Mirror = Mirror.MirrorSingle0;
+                Cartridge.Mirror = MirrorSingle0;
                 break;
             case 1:
-                Cartridge.Mirror = Mirror.MirrorSingle1;
+                Cartridge.Mirror = MirrorSingle1;
                 break;
             case 2:
-                Cartridge.Mirror = Mirror.MirrorVertical;
+                Cartridge.Mirror = MirrorVertical;
                 break;
             case 3:
-                Cartridge.Mirror = Mirror.MirrorHorizontal;
+                Cartridge.Mirror = MirrorHorizontal;
                 break;
         }
         updateOffsets();
@@ -240,9 +246,29 @@ public class Mapper1 extends Mapper {
         }
     }
 
+
     @Override
-    public void Save(Encoder encoder) throws IOException {
+    public void Save(ObjectOutputStream encoder) throws IOException {
 
     }
 
+    @Override
+    public void Load(ObjectInputStream decoder) throws IOException {
+
+    }
+
+    @Override
+    public void Step() {
+
+    }
+
+    @Override
+    public byte Read(int address) {
+        return 0;
+    }
+
+    @Override
+    public void Write(int address, byte value) {
+
+    }
 }

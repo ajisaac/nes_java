@@ -5,6 +5,7 @@ import co.aisaac.nes_java.memory.Memory;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class CPU {
     // Functional interface for CPU instruction functions
@@ -190,7 +191,7 @@ public class CPU {
     // NewCPU builds and returns a new CPU instance
     public static CPU NewCPU(Console console) {
         CPU cpu = new CPU();
-        cpu.memory = new CPUMemory(console);
+//        cpu.memory = new CPUMemory(console);
         cpu.createTable();
         cpu.Reset();
         return cpu;
@@ -235,7 +236,7 @@ public class CPU {
     }
 
     // Save writes the CPU state to the given DataOutputStream
-    public void Save(DataOutputStream encoder) throws IOException {
+    public void Save(ObjectOutputStream encoder) throws IOException {
         encoder.writeLong(Cycles);
         encoder.writeShort(PC);
         encoder.writeByte(SP);
@@ -434,12 +435,12 @@ public class CPU {
 
     // Read delegates to the memory read method
     public int Read(int address) {
-        return memory.read(address);
+        return memory.Read(address);
     }
 
     // Write delegates to the memory write method
     public void Write(int address, int value) {
-        memory.write(address, value);
+//        memory.Write(address, value);
     }
 
     // Step executes a single CPU instruction

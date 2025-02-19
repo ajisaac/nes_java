@@ -84,8 +84,10 @@ public class INes {
                 chr = new byte[8192];
             }
 
-            // success
-            return new Cartridge(prg, chr, mapper, mirror, battery);
+            byte[] sram = {};
+
+            // todo
+            return new Cartridge(prg, chr, sram, (byte) mapper, (byte) mirror, (byte) battery);
         } catch (EOFException e) {
             throw new Exception("Unexpected end of file", e);
         } catch (IOException e) {

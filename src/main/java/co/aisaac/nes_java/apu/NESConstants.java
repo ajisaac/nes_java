@@ -1,11 +1,14 @@
 package co.aisaac.nes_java.apu;
 
+import static co.aisaac.nes_java.CPU.CPUFrequency;
+
 public class NESConstants {
     public static final double frameCounterRate = CPUFrequency / 240.0;
 
     public static final byte[] lengthTable = new byte[]{
-            10, 254, 20, 2, 40, 4, 80, 6, 160, 8, 60, 10, 14, 12, 26, 14,
-            12, 16, 24, 18, 48, 20, 96, 22, 192, 24, 72, 26, 16, 28, 32, 30,
+            // todo
+            10, (byte) 254, 20, 2, 40, 4, 80, 6, (byte) 160, 8, 60, 10, 14, 12, 26, 14,
+            12, 16, 24, 18, 48, 20, 96, 22, (byte) 192, 24, 72, 26, 16, 28, 32, 30,
     };
 
     public static final byte[][] dutyTable = new byte[][]{

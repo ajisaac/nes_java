@@ -1,11 +1,12 @@
 package co.aisaac.nes_java.filter;
 
 // FilterChain is a chain of filters.
-class FilterChain implements Filter {
+public class FilterChain implements Filter {
     Filter[] filters;
 
-    FilterChain(Filter[] filters) {
-        this.filters = filters;
+    public FilterChain() {
+        // todo
+        this.filters = new Filter[10];
     }
 
     public float Step(float x) {

@@ -149,16 +149,16 @@ public class Mapper1 extends Mapper {
         byte mirror = (byte)(value & 3);
         switch (mirror) {
             case 0:
-                Cartridge.Mirror = MirrorSingle0;
+                Cartridge.mirror = MirrorSingle0;
                 break;
             case 1:
-                Cartridge.Mirror = MirrorSingle1;
+                Cartridge.mirror = MirrorSingle1;
                 break;
             case 2:
-                Cartridge.Mirror = MirrorVertical;
+                Cartridge.mirror = MirrorVertical;
                 break;
             case 3:
-                Cartridge.Mirror = MirrorHorizontal;
+                Cartridge.mirror = MirrorHorizontal;
                 break;
         }
         updateOffsets();
@@ -246,17 +246,6 @@ public class Mapper1 extends Mapper {
                 chrOffsets[1] = chrBankOffset(chrBank1);
                 break;
         }
-    }
-
-
-    @Override
-    public void Save(ObjectOutputStream encoder) throws IOException {
-
-    }
-
-    @Override
-    public void Load(ObjectInputStream decoder) throws IOException {
-
     }
 
     @Override

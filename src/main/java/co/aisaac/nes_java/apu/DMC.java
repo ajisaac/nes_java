@@ -1,6 +1,6 @@
 package co.aisaac.nes_java.apu;
 
-import co.aisaac.nes_java.CPU;
+import co.aisaac.nes_java.cpu.CPU;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

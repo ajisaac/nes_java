@@ -14,9 +14,9 @@ public class PPUMemory implements Memory {
     public byte Read(int address) {
         address = address % 0x4000;
         if (address < 0x2000) {
-            return this.console.Mapper.Read(address);
+            return this.console.mapper.Read(address);
         } else if (address < 0x3F00) {
-            byte mode = this.console.Cartridge.Mirror;
+            byte mode = this.console.cartridge.mirror;
             int mirrorAddr = MirrorAddress(mode, address) % 2048;
             return this.console.PPU.nameTableData[mirrorAddr];
         } else if (address < 0x4000) {
@@ -32,9 +32,9 @@ public class PPUMemory implements Memory {
     public void Write(int address, byte value) {
         address = address % 0x4000;
         if (address < 0x2000) {
-            this.console.Mapper.Write(address, value);
+            this.console.mapper.Write(address, value);
         } else if (address < 0x3F00) {
-            byte mode = this.console.Cartridge.Mirror;
+            byte mode = this.console.cartridge.mirror;
             int mirrorAddr = MirrorAddress(mode, address) % 2048;
             this.console.PPU.nameTableData[mirrorAddr] = value;
         } else if (address < 0x4000) {

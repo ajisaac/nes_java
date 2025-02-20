@@ -95,9 +95,9 @@ public class Mapper225 extends Mapper {
         }
         int mirr = (A >> 13) & 1;
         if (mirr == 1) {
-            this.Cartridge.Mirror = MirrorHorizontal;
+            this.Cartridge.mirror = MirrorHorizontal;
         } else {
-            this.Cartridge.Mirror = MirrorVertical;
+            this.Cartridge.mirror = MirrorVertical;
         }
 
         // fmt.Println(address, mirr, mode, prg)

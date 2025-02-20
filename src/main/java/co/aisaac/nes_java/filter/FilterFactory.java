@@ -1,7 +1,6 @@
 package co.aisaac.nes_java.filter;
 
-// Utility class for creating filters.
-class FilterFactory {
+public class FilterFactory {
     // sampleRate: samples per second
     // cutoffFreq: oscillations per second
     public static Filter LowPassFilter(float sampleRate, float cutoffFreq) {

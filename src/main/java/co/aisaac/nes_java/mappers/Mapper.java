@@ -3,10 +3,6 @@ package co.aisaac.nes_java.mappers;
 import co.aisaac.nes_java.Cartridge;
 import co.aisaac.nes_java.Console;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import static co.aisaac.nes_java.mappers.Mapper1.NewMapper1;
 import static co.aisaac.nes_java.mappers.Mapper2.NewMapper2;
 import static co.aisaac.nes_java.mappers.Mapper3.NewMapper3;
@@ -20,8 +16,8 @@ public abstract class Mapper {
 
     // This method corresponds to the function NewMapper(console *Console) (Mapper, error) in Golang
     public static Mapper NewMapper(Console console) throws Exception {
-        Cartridge cartridge = console.Cartridge;
-        switch (cartridge.Mapper) {
+        Cartridge cartridge = console.cartridge;
+        switch (cartridge.mapper) {
             case 0:
                 return NewMapper2(cartridge);
             case 1:
@@ -39,13 +35,9 @@ public abstract class Mapper {
             case (byte) 225:
                 return NewMapper225(cartridge);
             default:
-                throw new Exception(String.format("unsupported mapper: %d", cartridge.Mapper));
+                throw new Exception(String.format("unsupported mapper: %d", cartridge.mapper));
         }
     }
-
-    public abstract void Save(ObjectOutputStream encoder) throws IOException;
-
-    public abstract void Load(ObjectInputStream decoder) throws IOException;
 
     public abstract void Step();
 

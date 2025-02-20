@@ -60,9 +60,9 @@ public class Mapper7 extends Mapper {
         } else if (address >= 0x8000) {
             this.prgBank = value & 7;
             if ((value & 0x10) == 0x00) {
-                this.Cartridge.Mirror = MirrorSingle0;
+                this.Cartridge.mirror = MirrorSingle0;
             } else if ((value & 0x10) == 0x10) {
-                this.Cartridge.Mirror = MirrorSingle1;
+                this.Cartridge.mirror = MirrorSingle1;
             }
         } else if (address >= 0x6000) {
             int index = address - 0x6000;

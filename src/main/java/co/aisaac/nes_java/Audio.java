@@ -10,12 +10,7 @@ public class Audio {
     public BlockingQueue<Float> channel;
 
     public Audio() {
-        this.channel = new ArrayBlockingQueue<Float>(44100);
-    }
-
-    public static Audio NewAudio() {
-        Audio a = new Audio();
-        return a;
+        this.channel = new ArrayBlockingQueue<>(44100);
     }
 
     public void Start() throws Exception {

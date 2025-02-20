@@ -1,14 +1,15 @@
 package co.aisaac.nes_java.apu;
 
 import co.aisaac.nes_java.Console;
+import co.aisaac.nes_java.filter.Filter;
 import co.aisaac.nes_java.filter.FilterChain;
+import co.aisaac.nes_java.filter.FilterFactory;
 
-import java.io.*;
 import java.util.concurrent.*;
 
+import static co.aisaac.nes_java.cpu.CPU.CPUFrequency;
 
 // APU
-
 public class APU {
     public Console console;
     public BlockingQueue<Float> channel;
@@ -22,46 +23,33 @@ public class APU {
     public byte framePeriod;
     public byte frameValue;
     public boolean frameIRQ;
-    public FilterChain filterChain = new FilterChain();
+    public FilterChain filterChain = new FilterChain(new Filter[]{});
 
-    public APU() {
+    public APU(Console console) {
         // Default constructor
-        channel = new LinkedBlockingQueue<Float>();
+        this.console = console;
+        this.noise.shiftRegister = 1;
+        this.pulse1.channel = 1;
+        this.pulse2.channel = 2;
+        this.framePeriod = 4;
+        this.dmc.cpu = console.CPU;
+        channel = new LinkedBlockingQueue<>();
     }
 
-    public static APU NewAPU(Console console) {
-        APU apu = new APU();
-        apu.console = console;
-        apu.noise.shiftRegister = 1;
-        apu.pulse1.channel = 1;
-        apu.pulse2.channel = 2;
-        apu.framePeriod = 4;
-        apu.dmc.cpu = console.CPU;
-        return apu;
-    }
-
-    public void Save(ObjectOutputStream encoder) throws IOException {
-        encoder.writeObject(cycle);
-        encoder.writeObject(framePeriod);
-        encoder.writeObject(frameValue);
-        encoder.writeObject(frameIRQ);
-        pulse1.Save(encoder);
-        pulse2.Save(encoder);
-        triangle.Save(encoder);
-        noise.Save(encoder);
-        dmc.Save(encoder);
-    }
-
-    public void Load(ObjectInputStream decoder) throws IOException, ClassNotFoundException {
-        cycle = (Long) decoder.readObject();
-        framePeriod = (Byte) decoder.readObject();
-        frameValue = (Byte) decoder.readObject();
-        frameIRQ = (Boolean) decoder.readObject();
-        pulse1.Load(decoder);
-        pulse2.Load(decoder);
-        triangle.Load(decoder);
-        noise.Load(decoder);
-        dmc.Load(decoder);
+    // todo something should set this
+    public void SetAudioSampleRate(double sampleRate) {
+        if (sampleRate != 0) {
+            this.sampleRate = CPUFrequency / sampleRate;
+            this.filterChain = new FilterChain(
+                    new Filter[]{
+                            FilterFactory.HighPassFilter((float) sampleRate, 90),
+                            FilterFactory.HighPassFilter((float) sampleRate, 440),
+                            FilterFactory.LowPassFilter((float) sampleRate, 14000)
+                    }
+            );
+        } else {
+            this.filterChain = null;
+        }
     }
 
     public void Step() {

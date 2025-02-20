@@ -160,10 +160,10 @@ public class Mapper4 extends Mapper {
     public void writeMirror(byte value) {
         switch (value & 1) {
             case 0:
-                Cartridge.Mirror = MirrorVertical;
+                Cartridge.mirror = MirrorVertical;
                 break;
             case 1:
-                Cartridge.Mirror = MirrorHorizontal;
+                Cartridge.mirror = MirrorHorizontal;
                 break;
         }
     }

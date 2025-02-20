@@ -16,7 +16,6 @@ import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,77 +37,70 @@ public class Director {
         this.window = window;
         this.timestamp = GLFW.glfwGetTime();
         this.title = path;
+        this.hash = hashFile(path);
 
-        try {
-            this.hash = hashFile(path);
-            this.console = Console.NewConsole(path);
-        } catch (Exception err) {
-            err.printStackTrace();
-            System.exit(1);
+        if (hash == null) {
+            RuntimeException runtimeException = new RuntimeException("Something went wrong.");
+            runtimeException.printStackTrace();
+            throw runtimeException;
         }
 
+        this.console = new Console(path);
         this.texture = createTexture();
+        this.audio = new Audio();
 
-        // todo create audio
-        this.console.SetAudioChannel(this.audio.channel);
-        this.console.SetAudioSampleRate(this.audio.sampleRate);
-
-        this.load_cartridge(-1);
+        if (this.console.cartridge.battery != 0) {
+            byte[] sram;
+            try {
+                sram = readSRAM(sramPath(this.hash, -1));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            this.console.cartridge.SRAM = sram;
+        }
     }
 
     public void run() {
         while (!GLFW.glfwWindowShouldClose(window)) {
-            this.step();
+            double timestamp1 = GLFW.glfwGetTime();
+            double dt = timestamp1 - this.timestamp;
+            this.timestamp = timestamp1;
+
+            if (dt > 1) {
+                dt = 0;
+            }
+
+            boolean turbo = (console.PPU.Frame % 6) < 3;
+            boolean[] k1 = readKeys(window, turbo);
+            boolean[] j1 = readJoystick(GLFW.GLFW_JOYSTICK_1, turbo);
+            boolean[] j2 = readJoystick(GLFW.GLFW_JOYSTICK_2, turbo);
+            console.SetButtons1(combineButtons(k1, j1));
+            console.SetButtons2(j2);
+            console.stepSeconds(dt);
+
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.texture);
+            BufferedImage im = this.console.Buffer();
+            int width = im.getWidth();
+            int height = im.getHeight();
+            ByteBuffer buffer = convertImageToByteBuffer(im);
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height,
+                    0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+
+            drawBuffer(window);
+
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+            if (this.record) {
+                if (this.frames == null) {
+                    this.frames = new ArrayList<>();
+                }
+                this.frames.add(copyImage(this.console.Buffer()));
+            }
 
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             GLFW.glfwSwapBuffers(window);
 
             GLFW.glfwPollEvents();
         }
-    }
-
-    public void step() {
-        double timestamp = GLFW.glfwGetTime();
-        double dt = timestamp - this.timestamp;
-        this.timestamp = timestamp;
-
-        if (dt > 1) {
-            dt = 0;
-        }
-
-        updateControllers();
-        console.stepSeconds(dt);
-
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.texture);
-        setTexture(this.console.Buffer());
-
-        drawBuffer(window);
-
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-        if (this.record) {
-            if (this.frames == null) {
-                this.frames = new ArrayList<>();
-            }
-            this.frames.add(copyImage(this.console.Buffer()));
-        }
-    }
-
-    // setTexture sets the texture image data based on the provided BufferedImage.
-    void setTexture(BufferedImage im) {
-        int width = im.getWidth();
-        int height = im.getHeight();
-        ByteBuffer buffer = convertImageToByteBuffer(im);
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height,
-                0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
-    }
-
-    void updateControllers() {
-        boolean turbo = (console.PPU.Frame % 6) < 3;
-        boolean[] k1 = readKeys(window, turbo);
-        boolean[] j1 = readJoystick(GLFW.GLFW_JOYSTICK_1, turbo);
-        boolean[] j2 = readJoystick(GLFW.GLFW_JOYSTICK_2, turbo);
-        console.SetButtons1(combineButtons(k1, j1));
-        console.SetButtons2(j2);
     }
 
     // GAME VIEW
@@ -143,22 +135,10 @@ public class Director {
     }
 
 
-    void load_cartridge(int snapshot) {
-        if (this.console.Cartridge.Battery != 0) {
-            byte[] sram;
-            try {
-                sram = readSRAM(sramPath(this.hash, snapshot));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            this.console.Cartridge.SRAM = sram;
-        }
-    }
-
     void save(int snapshot) {
-        if (this.console.Cartridge.Battery != 0) {
+        if (this.console.cartridge.battery != 0) {
             try {
-                writeSRAM(sramPath(this.hash, snapshot), this.console.Cartridge.SRAM);
+                writeSRAM(sramPath(this.hash, snapshot), this.console.cartridge.SRAM);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -199,6 +179,7 @@ public class Director {
     }
 
     String homeDir = "/Users/aaron/Code/personal/nes_java/src/main/resources/co/aisaac/nes_java";
+
     // sramPath returns the sram file path based on hash and snapshot
     String sramPath(String hash, int snapshot) {
         if (snapshot >= 0) {
@@ -232,20 +213,8 @@ public class Director {
         if (!GLFW.glfwJoystickPresent(joy)) {
             return result;
         }
-        String joyname = GLFW.glfwGetJoystickName(joy);
         float[] axes = GLFW.glfwGetJoystickAxes(joy).array();
         byte[] buttons = GLFW.glfwGetJoystickButtons(joy).array();
-        if ("PLAYSTATION(R)3 Controller".equals(joyname)) {
-            result[Controller.ButtonA] = (buttons[14] == 1) || (turbo && (buttons[2] == 1));
-            result[Controller.ButtonB] = (buttons[13] == 1) || (turbo && (buttons[3] == 1));
-            result[Controller.ButtonSelect] = (buttons[0] == 1);
-            result[Controller.ButtonStart] = (buttons[3] == 1);
-            result[Controller.ButtonUp] = (buttons[4] == 1) || (axes[1] < -0.5f);
-            result[Controller.ButtonDown] = (buttons[6] == 1) || (axes[1] > 0.5f);
-            result[Controller.ButtonLeft] = (buttons[7] == 1) || (axes[0] < -0.5f);
-            result[Controller.ButtonRight] = (buttons[5] == 1) || (axes[0] > 0.5f);
-            return result;
-        }
         if (buttons.length < 8) {
             return result;
         }
@@ -260,20 +229,6 @@ public class Director {
         return result;
     }
 
-    // joystickReset checks if the joystick reset buttons are pressed.
-    boolean joystickReset(int joy) {
-        if (!GLFW.glfwJoystickPresent(joy)) {
-            return false;
-        }
-        // todo
-        ByteBuffer buttons = GLFW.glfwGetJoystickButtons(joy);
-        if (buttons.array().length < 6) {
-            return false;
-        }
-        // todo
-        return (buttons.get(4) == 1 && buttons.get(5) == 1);
-    }
-
     // combineButtons returns the logical OR combination of two button arrays.
     boolean[] combineButtons(boolean[] a, boolean[] b) {
         boolean[] result = new boolean[8];
@@ -283,15 +238,19 @@ public class Director {
         return result;
     }
 
-    String hashFile(String path) throws IOException, NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        byte[] data = Files.readAllBytes(Paths.get(path));
-        byte[] digest = md.digest(data);
-        StringBuilder sb = new StringBuilder();
-        for (byte b : digest) {
-            sb.append(String.format("%02x", b));
+    String hashFile(String path) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] data = Files.readAllBytes(Paths.get(path));
+            byte[] digest = md.digest(data);
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return null;
         }
-        return sb.toString();
     }
 
     int createTexture() {

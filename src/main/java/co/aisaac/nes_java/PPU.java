@@ -2,16 +2,14 @@ package co.aisaac.nes_java;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
+import co.aisaac.nes_java.cpu.CPU;
 import co.aisaac.nes_java.memory.Memory;
 import co.aisaac.nes_java.memory.PPUMemory;
 
 public class PPU {
     // Memory interface
-    private Memory Memory;
+    private Memory memory;
     public Console console; // reference to parent object
 
     public int Cycle;    // 0-340
@@ -92,111 +90,11 @@ public class PPU {
 
     // Constructor equivalent to NewPPU in Go.
     public PPU(Console console) {
-        this.Memory = new PPUMemory(console);
         this.console = console;
+        this.memory = new PPUMemory(console);
         this.front = new BufferedImage(256, 240, BufferedImage.TYPE_INT_ARGB);
         this.back = new BufferedImage(256, 240, BufferedImage.TYPE_INT_ARGB);
         this.Reset();
-    }
-
-    // Save method writes each field to the ObjectOutputStream.
-    public void Save(ObjectOutputStream encoder) throws IOException {
-        encoder.writeInt(this.Cycle);
-        encoder.writeInt(this.ScanLine);
-        encoder.writeLong(this.Frame);
-        encoder.write(this.paletteData);
-        encoder.write(this.nameTableData);
-        encoder.write(this.oamData);
-        encoder.writeInt(this.v);
-        encoder.writeInt(this.t);
-        encoder.writeByte(this.x);
-        encoder.writeByte(this.w);
-        encoder.writeByte(this.f);
-        encoder.writeByte(this.register);
-        encoder.writeBoolean(this.nmiOccurred);
-        encoder.writeBoolean(this.nmiOutput);
-        encoder.writeBoolean(this.nmiPrevious);
-        encoder.writeByte(this.nmiDelay);
-        encoder.writeByte(this.nameTableByte);
-        encoder.writeByte(this.attributeTableByte);
-        encoder.writeByte(this.lowTileByte);
-        encoder.writeByte(this.highTileByte);
-        encoder.writeLong(this.tileData);
-        encoder.writeInt(this.spriteCount);
-        for (int i = 0; i < this.spritePatterns.length; i++) {
-            encoder.writeInt(this.spritePatterns[i]);
-        }
-        encoder.write(this.spritePositions);
-        encoder.write(this.spritePriorities);
-        encoder.write(this.spriteIndexes);
-        encoder.writeByte(this.flagNameTable);
-        encoder.writeByte(this.flagIncrement);
-        encoder.writeByte(this.flagSpriteTable);
-        encoder.writeByte(this.flagBackgroundTable);
-        encoder.writeByte(this.flagSpriteSize);
-        encoder.writeByte(this.flagMasterSlave);
-        encoder.writeByte(this.flagGrayscale);
-        encoder.writeByte(this.flagShowLeftBackground);
-        encoder.writeByte(this.flagShowLeftSprites);
-        encoder.writeByte(this.flagShowBackground);
-        encoder.writeByte(this.flagShowSprites);
-        encoder.writeByte(this.flagRedTint);
-        encoder.writeByte(this.flagGreenTint);
-        encoder.writeByte(this.flagBlueTint);
-        encoder.writeByte(this.flagSpriteZeroHit);
-        encoder.writeByte(this.flagSpriteOverflow);
-        encoder.writeByte(this.oamAddress);
-        encoder.writeByte(this.bufferedData);
-    }
-
-    // Load method reads each field from the ObjectInputStream.
-    public void Load(ObjectInputStream decoder) throws IOException {
-        this.Cycle = decoder.readInt();
-        this.ScanLine = decoder.readInt();
-        this.Frame = decoder.readLong();
-        decoder.readFully(this.paletteData);
-        decoder.readFully(this.nameTableData);
-        decoder.readFully(this.oamData);
-        this.v = decoder.readInt();
-        this.t = decoder.readInt();
-        this.x = decoder.readByte();
-        this.w = decoder.readByte();
-        this.f = decoder.readByte();
-        this.register = decoder.readByte();
-        this.nmiOccurred = decoder.readBoolean();
-        this.nmiOutput = decoder.readBoolean();
-        this.nmiPrevious = decoder.readBoolean();
-        this.nmiDelay = decoder.readByte();
-        this.nameTableByte = decoder.readByte();
-        this.attributeTableByte = decoder.readByte();
-        this.lowTileByte = decoder.readByte();
-        this.highTileByte = decoder.readByte();
-        this.tileData = decoder.readLong();
-        this.spriteCount = decoder.readInt();
-        for (int i = 0; i < this.spritePatterns.length; i++) {
-            this.spritePatterns[i] = decoder.readInt();
-        }
-        decoder.readFully(this.spritePositions);
-        decoder.readFully(this.spritePriorities);
-        decoder.readFully(this.spriteIndexes);
-        this.flagNameTable = decoder.readByte();
-        this.flagIncrement = decoder.readByte();
-        this.flagSpriteTable = decoder.readByte();
-        this.flagBackgroundTable = decoder.readByte();
-        this.flagSpriteSize = decoder.readByte();
-        this.flagMasterSlave = decoder.readByte();
-        this.flagGrayscale = decoder.readByte();
-        this.flagShowLeftBackground = decoder.readByte();
-        this.flagShowLeftSprites = decoder.readByte();
-        this.flagShowBackground = decoder.readByte();
-        this.flagShowSprites = decoder.readByte();
-        this.flagRedTint = decoder.readByte();
-        this.flagGreenTint = decoder.readByte();
-        this.flagBlueTint = decoder.readByte();
-        this.flagSpriteZeroHit = decoder.readByte();
-        this.flagSpriteOverflow = decoder.readByte();
-        this.oamAddress = decoder.readByte();
-        this.bufferedData = decoder.readByte();
     }
 
     // Reset initializes the PPU to its power-on state.
@@ -266,7 +164,7 @@ public class PPU {
     }
 
     // $2000: PPUCTRL
-    public void writeControl(byte value) {
+    void writeControl(byte value) {
         this.flagNameTable = (byte) ((value >> 0) & 3);
         this.flagIncrement = (byte) ((value >> 2) & 1);
         this.flagSpriteTable = (byte) ((value >> 3) & 1);
@@ -280,7 +178,7 @@ public class PPU {
     }
 
     // $2001: PPUMASK
-    public void writeMask(byte value) {
+    void writeMask(byte value) {
         this.flagGrayscale = (byte) ((value >> 0) & 1);
         this.flagShowLeftBackground = (byte) ((value >> 1) & 1);
         this.flagShowLeftSprites = (byte) ((value >> 2) & 1);
@@ -292,7 +190,7 @@ public class PPU {
     }
 
     // $2002: PPUSTATUS
-    public byte readStatus() {
+    byte readStatus() {
         int result = (this.register & 0x1F);
         result |= (this.flagSpriteOverflow & 0xFF) << 5;
         result |= (this.flagSpriteZeroHit & 0xFF) << 6;
@@ -307,12 +205,12 @@ public class PPU {
     }
 
     // $2003: OAMADDR
-    public void writeOAMAddress(byte value) {
+    void writeOAMAddress(byte value) {
         this.oamAddress = value;
     }
 
     // $2004: OAMDATA (read)
-    public byte readOAMData() {
+    byte readOAMData() {
         byte data = this.oamData[this.oamAddress & 0xFF];
         if ((this.oamAddress & 0x03) == 0x02) {
             data = (byte) (data & 0xE3);
@@ -321,13 +219,13 @@ public class PPU {
     }
 
     // $2004: OAMDATA (write)
-    public void writeOAMData(byte value) {
+    void writeOAMData(byte value) {
         this.oamData[this.oamAddress & 0xFF] = value;
         this.oamAddress++;
     }
 
     // $2005: PPUSCROLL
-    public void writeScroll(byte value) {
+    void writeScroll(byte value) {
         if (this.w == 0) {
             // t: ........ ...HGFED = d: HGFED...
             // x:               CBA = d: .....CBA
@@ -345,7 +243,7 @@ public class PPU {
     }
 
     // $2006: PPUADDR
-    public void writeAddress(byte value) {
+    void writeAddress(byte value) {
         if (this.w == 0) {
             // t: ..FEDCBA ........ = d: ..FEDCBA
             // t: .X...... ........ = 0
@@ -363,16 +261,16 @@ public class PPU {
     }
 
     // $2007: PPUDATA (read)
-    public byte readData() {
+    byte readData() {
         int addr = this.v & 0xFFFF;
-        byte value = this.Read(addr);
+        byte value = this.read(addr);
         // emulate buffered reads
         if ((addr % 0x4000) < 0x3F00) {
             byte buffered = this.bufferedData;
             this.bufferedData = value;
             value = buffered;
         } else {
-            this.bufferedData = this.Read(addr - 0x1000);
+            this.bufferedData = this.read(addr - 0x1000);
         }
         // increment address
         if (this.flagIncrement == 0) {
@@ -384,8 +282,8 @@ public class PPU {
     }
 
     // $2007: PPUDATA (write)
-    public void writeData(byte value) {
-        this.Write(this.v, value);
+    void writeData(byte value) {
+        this.write(this.v, value);
         if (this.flagIncrement == 0) {
             this.v += 1;
         } else {
@@ -394,7 +292,7 @@ public class PPU {
     }
 
     // $4014: OAMDMA
-    public void writeDMA(byte value) {
+    void writeDMA(byte value) {
         CPU cpu = this.console.CPU;
         int address = (value & 0xFF) << 8;
         for (int i = 0; i < 256; i++) {
@@ -410,7 +308,7 @@ public class PPU {
 
     // NTSC Timing Helper Functions
 
-    public void incrementX() {
+    void incrementX() {
         // increment hori(v)
         // if coarse X == 31
         if ((this.v & 0x001F) == 31) {
@@ -424,7 +322,7 @@ public class PPU {
         }
     }
 
-    public void incrementY() {
+    void incrementY() {
         // increment vert(v)
         // if fine Y < 7
         if ((this.v & 0x7000) != 0x7000) {
@@ -452,19 +350,19 @@ public class PPU {
         }
     }
 
-    public void copyX() {
+    void copyX() {
         // hori(v) = hori(t)
         // v: .....F.. ...EDCBA = t: .....F.. ...EDCBA
         this.v = (this.v & 0xFBE0) | (this.t & 0x041F);
     }
 
-    public void copyY() {
+    void copyY() {
         // vert(v) = vert(t)
         // v: .IHGF.ED CBA..... = t: .IHGF.ED CBA.....
         this.v = (this.v & 0x841F) | (this.t & 0x7BE0);
     }
 
-    public void nmiChange() {
+    void nmiChange() {
         boolean nmi = this.nmiOutput && this.nmiOccurred;
         if (nmi && !this.nmiPrevious) {
             // TODO: this fixes some games but the delay shouldn't have to be so
@@ -474,7 +372,7 @@ public class PPU {
         this.nmiPrevious = nmi;
     }
 
-    public void setVerticalBlank() {
+    void setVerticalBlank() {
         BufferedImage temp = this.front;
         this.front = this.back;
         this.back = temp;
@@ -482,39 +380,39 @@ public class PPU {
         this.nmiChange();
     }
 
-    public void clearVerticalBlank() {
+    void clearVerticalBlank() {
         this.nmiOccurred = false;
         this.nmiChange();
     }
 
-    public void fetchNameTableByte() {
+    void fetchNameTableByte() {
         int address = 0x2000 | (this.v & 0x0FFF);
-        this.nameTableByte = this.Read(address);
+        this.nameTableByte = this.read(address);
     }
 
-    public void fetchAttributeTableByte() {
+    void fetchAttributeTableByte() {
         int address = 0x23C0 | (this.v & 0x0C00) | ((this.v >> 4) & 0x38) | ((this.v >> 2) & 0x07);
         int shift = ((this.v >> 4) & 4) | (this.v & 2);
-        this.attributeTableByte = (byte) (((this.Read(address) >> shift) & 3) << 2);
+        this.attributeTableByte = (byte) (((this.read(address) >> shift) & 3) << 2);
     }
 
-    public void fetchLowTileByte() {
+    void fetchLowTileByte() {
         int fineY = (this.v >> 12) & 7;
         int table = this.flagBackgroundTable;
         int tile = this.nameTableByte & 0xFF;
         int address = 0x1000 * table + tile * 16 + fineY;
-        this.lowTileByte = this.Read(address);
+        this.lowTileByte = this.read(address);
     }
 
-    public void fetchHighTileByte() {
+    void fetchHighTileByte() {
         int fineY = (this.v >> 12) & 7;
         int table = this.flagBackgroundTable;
         int tile = this.nameTableByte & 0xFF;
         int address = 0x1000 * table + tile * 16 + fineY;
-        this.highTileByte = this.Read(address + 8);
+        this.highTileByte = this.read(address + 8);
     }
 
-    public void storeTileData() {
+    void storeTileData() {
         int data = 0;
         for (int i = 0; i < 8; i++) {
             int a = this.attributeTableByte & 0xFF;
@@ -528,11 +426,11 @@ public class PPU {
         this.tileData |= (long) data;
     }
 
-    public int fetchTileData() {
+    int fetchTileData() {
         return (int) (this.tileData >> 32);
     }
 
-    public byte backgroundPixel() {
+    byte backgroundPixel() {
         if (this.flagShowBackground == 0) {
             return 0;
         }
@@ -540,7 +438,7 @@ public class PPU {
         return (byte) (data & 0x0F);
     }
 
-    public int[] spritePixel() {
+    int[] spritePixel() {
         if (this.flagShowSprites == 0) {
             return new int[] { 0, 0 };
         }
@@ -559,7 +457,7 @@ public class PPU {
         return new int[] { 0, 0 };
     }
 
-    public void renderPixel() {
+    void renderPixel() {
         int x = this.Cycle - 1;
         int y = this.ScanLine;
         byte background = this.backgroundPixel();
@@ -596,7 +494,7 @@ public class PPU {
         this.back.setRGB(x, y, c.getRGB());
     }
 
-    public int fetchSpritePattern(int i, int row) {
+    int fetchSpritePattern(int i, int row) {
         int tile = this.oamData[i * 4 + 1] & 0xFF;
         int attributes = this.oamData[i * 4 + 2] & 0xFF;
         int address;
@@ -619,8 +517,8 @@ public class PPU {
             address = 0x1000 * table + tile * 16 + row;
         }
         int a = (attributes & 3) << 2;
-        int lowTileByte = this.Read(address) & 0xFF;
-        int highTileByte = this.Read(address + 8) & 0xFF;
+        int lowTileByte = this.read(address) & 0xFF;
+        int highTileByte = this.read(address + 8) & 0xFF;
         int data = 0;
         for (int j = 0; j < 8; j++) {
             int p1, p2;
@@ -641,7 +539,7 @@ public class PPU {
         return data;
     }
 
-    public void evaluateSprites() {
+    void evaluateSprites() {
         int h;
         if (this.flagSpriteSize == 0) {
             h = 8;
@@ -673,7 +571,7 @@ public class PPU {
     }
 
     // tick updates Cycle, ScanLine and Frame counters.
-    public void tick() {
+    void tick() {
         if (this.nmiDelay > 0) {
             this.nmiDelay--;
             if (this.nmiDelay == 0 && this.nmiOutput && this.nmiOccurred) {
@@ -703,7 +601,7 @@ public class PPU {
     }
 
     // Step executes a single PPU cycle.
-    public void Step() {
+    public void step() {
         this.tick();
 
         boolean renderingEnabled = this.flagShowBackground != 0 || this.flagShowSprites != 0;
@@ -779,11 +677,11 @@ public class PPU {
     }
 
     // Helper methods for Memory read and write using the Memory interface.
-    public byte Read(int address) {
-        return this.Memory.Read(address);
+    byte read(int address) {
+        return this.memory.Read(address);
     }
 
-    public void Write(int address, byte value) {
-        this.Memory.Write(address, value);
+    void write(int address, byte value) {
+        this.memory.Write(address, value);
     }
 }

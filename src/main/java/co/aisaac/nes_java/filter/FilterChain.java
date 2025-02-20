@@ -4,9 +4,8 @@ package co.aisaac.nes_java.filter;
 public class FilterChain implements Filter {
     Filter[] filters;
 
-    public FilterChain() {
-        // todo
-        this.filters = new Filter[10];
+    public FilterChain(Filter[] filters) {
+        this.filters = filters;
     }
 
     public float Step(float x) {

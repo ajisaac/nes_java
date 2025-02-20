@@ -31,22 +31,6 @@ public class Mapper2 extends Mapper {
     }
 
     @Override
-    public void Save(ObjectOutputStream encoder) throws IOException {
-        // todo
-//        encoder.encode(this.prgBanks);
-//        encoder.encode(this.prgBank1);
-//        encoder.encode(this.prgBank2);
-    }
-
-    @Override
-    public void Load(ObjectInputStream decoder) throws IOException {
-        // todo
-//        this.prgBanks = decoder.decodeInt();
-//        this.prgBank1 = decoder.decodeInt();
-//        this.prgBank2 = decoder.decodeInt();
-    }
-
-    @Override
     public void Step() {
     }
 

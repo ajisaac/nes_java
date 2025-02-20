@@ -1,6 +1,6 @@
 package co.aisaac.nes_java.apu;
 
-import static co.aisaac.nes_java.CPU.CPUFrequency;
+import static co.aisaac.nes_java.cpu.CPU.CPUFrequency;
 
 public class NESConstants {
     public static final double frameCounterRate = CPUFrequency / 240.0;

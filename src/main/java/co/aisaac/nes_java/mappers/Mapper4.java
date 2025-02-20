@@ -1,4 +1,8 @@
-package co.aisaac.nes_java;
+package co.aisaac.nes_java.mappers;
+
+import co.aisaac.nes_java.Cartridge;
+import co.aisaac.nes_java.Console;
+import co.aisaac.nes_java.PPU;
 
 import java.io.*;
 
@@ -7,8 +11,8 @@ import static co.aisaac.nes_java.memory.PPUMemory.MirrorVertical;
 
 // Mapper4 class translated from Golang
 public class Mapper4 extends Mapper {
-    public Cartridge Cartridge;
-    public Console console;
+    public co.aisaac.nes_java.Cartridge Cartridge;
+    public co.aisaac.nes_java.Console console;
     public byte register;
     public byte[] registers = new byte[8];
     public byte prgMode;
@@ -20,7 +24,7 @@ public class Mapper4 extends Mapper {
     public boolean irqEnable;
 
     // Constructor equivalent to NewMapper4 in Golang
-    public Mapper4(Console console, Cartridge cartridge) {
+    public Mapper4(co.aisaac.nes_java.Console console, Cartridge cartridge) {
         this.Cartridge = cartridge;
         this.console = console;
         this.prgOffsets[0] = prgBankOffset(0);

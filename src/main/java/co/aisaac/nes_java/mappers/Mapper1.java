@@ -1,4 +1,6 @@
-package co.aisaac.nes_java;
+package co.aisaac.nes_java.mappers;
+
+import co.aisaac.nes_java.Cartridge;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,7 +17,7 @@ import static co.aisaac.nes_java.memory.PPUMemory.MirrorVertical;
 //
 public class Mapper1 extends Mapper {
     // Embedded Cartridge reference
-    public Cartridge Cartridge;
+    public co.aisaac.nes_java.Cartridge Cartridge;
     public byte shiftRegister;
     public byte control;
     public byte prgMode;

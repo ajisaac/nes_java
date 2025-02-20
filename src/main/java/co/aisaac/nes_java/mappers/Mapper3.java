@@ -1,11 +1,13 @@
-package co.aisaac.nes_java;
+package co.aisaac.nes_java.mappers;
+
+import co.aisaac.nes_java.Cartridge;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 
 public class Mapper3 extends Mapper {
-    public Cartridge Cartridge;
+    public co.aisaac.nes_java.Cartridge Cartridge;
     public int chrBank;
     public int prgBank1;
     public int prgBank2;

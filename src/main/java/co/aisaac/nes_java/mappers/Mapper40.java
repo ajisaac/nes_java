@@ -1,4 +1,7 @@
-package co.aisaac.nes_java;
+package co.aisaac.nes_java.mappers;
+
+import co.aisaac.nes_java.Cartridge;
+import co.aisaac.nes_java.Console;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -6,7 +9,7 @@ import java.io.ObjectOutputStream;
 
 // Mapper40 class implementing Mapper interface and translating the original Golang code
 public class Mapper40 extends Mapper {
-    Cartridge Cartridge;          // corresponds to *Cartridge
+    co.aisaac.nes_java.Cartridge Cartridge;          // corresponds to *Cartridge
     Console console;              // corresponds to *Console
     int bank;                     // bank field
     int cycles;                   // cycles field

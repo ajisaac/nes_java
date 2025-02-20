@@ -1,8 +1,5 @@
 package co.aisaac.nes_java;
 
-import co.aisaac.nes_java.ui.Director;
-
-import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
@@ -87,8 +84,8 @@ public class Main {
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
         // run director
-        Director director = new Director(window);
-        director.start(paths);
+        Director director = new Director(window, "/Users/aaron/Code/personal/nes_java/src/main/resources/data/Nintendo/Castlevania.nes");
+        director.run();
 
 
         // Free the window callbacks and destroy the window

@@ -1,4 +1,4 @@
-package co.aisaac.nes_java.ui;
+package co.aisaac.nes_java;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;

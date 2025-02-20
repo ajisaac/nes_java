@@ -1,16 +1,19 @@
-package co.aisaac.nes_java;
+package co.aisaac.nes_java.mappers;
+
+import co.aisaac.nes_java.Cartridge;
+import co.aisaac.nes_java.Console;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import static co.aisaac.nes_java.Mapper1.NewMapper1;
-import static co.aisaac.nes_java.Mapper2.NewMapper2;
-import static co.aisaac.nes_java.Mapper3.NewMapper3;
-import static co.aisaac.nes_java.Mapper4.NewMapper4;
-import static co.aisaac.nes_java.Mapper40.NewMapper40;
-import static co.aisaac.nes_java.Mapper7.NewMapper7;
-import static co.aisaac.nes_java.Mapper225.NewMapper225;
+import static co.aisaac.nes_java.mappers.Mapper1.NewMapper1;
+import static co.aisaac.nes_java.mappers.Mapper2.NewMapper2;
+import static co.aisaac.nes_java.mappers.Mapper3.NewMapper3;
+import static co.aisaac.nes_java.mappers.Mapper4.NewMapper4;
+import static co.aisaac.nes_java.mappers.Mapper40.NewMapper40;
+import static co.aisaac.nes_java.mappers.Mapper7.NewMapper7;
+import static co.aisaac.nes_java.mappers.Mapper225.NewMapper225;
 
 // MapperFactory holds the NewMapper creation functions corresponding to the Go version.
 public abstract class Mapper {

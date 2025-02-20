@@ -1,4 +1,6 @@
-package co.aisaac.nes_java;
+package co.aisaac.nes_java.mappers;
+
+import co.aisaac.nes_java.Cartridge;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,7 +16,7 @@ import static co.aisaac.nes_java.memory.PPUMemory.MirrorVertical;
 
 public class Mapper225 extends Mapper {
     // Embedded Cartridge
-    public Cartridge Cartridge;
+    public co.aisaac.nes_java.Cartridge Cartridge;
     public int chrBank;
     public int prgBank1;
     public int prgBank2;

@@ -1,4 +1,6 @@
-package co.aisaac.nes_java;
+package co.aisaac.nes_java.mappers;
+
+import co.aisaac.nes_java.Cartridge;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -7,7 +9,7 @@ import java.io.ObjectOutputStream;
 // Mapper2 class translation from Golang to Java
 public class Mapper2 extends Mapper {
     // Corresponds to *Cartridge in Go; preserved as a public field
-    public Cartridge Cartridge;
+    public co.aisaac.nes_java.Cartridge Cartridge;
     public int prgBanks;
     public int prgBank1;
     public int prgBank2;

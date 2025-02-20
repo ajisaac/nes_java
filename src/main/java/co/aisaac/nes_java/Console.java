@@ -2,25 +2,19 @@ package co.aisaac.nes_java;
 
 import co.aisaac.nes_java.filter.FilterChain;
 
-import java.io.IOException;
-
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.concurrent.BlockingQueue;
 
 import static co.aisaac.nes_java.CPU.CPUFrequency;
 import static co.aisaac.nes_java.CPU.NewCPU;
 import static co.aisaac.nes_java.Controller.NewController;
 import static co.aisaac.nes_java.INes.LoadNESFile;
-import static co.aisaac.nes_java.Mapper.NewMapper;
+import static co.aisaac.nes_java.mappers.Mapper.NewMapper;
 import static co.aisaac.nes_java.apu.APU.NewAPU;
 
 import co.aisaac.nes_java.apu.APU;
+import co.aisaac.nes_java.mappers.Mapper;
 
 public class Console {
     public CPU CPU;
@@ -29,7 +23,7 @@ public class Console {
     public Cartridge Cartridge;
     public Controller Controller1;
     public Controller Controller2;
-    public Mapper Mapper;
+    public co.aisaac.nes_java.mappers.Mapper Mapper;
     public byte[] RAM;
 
 
@@ -78,14 +72,14 @@ public class Console {
 
     public int StepFrame() {
         int cpuCycles = 0;
-//        int frame = this.PPU.Frame;
-//        while (frame == this.PPU.Frame) {
-//            cpuCycles += this.Step();
-//        }
+        int frame = this.PPU.Frame;
+        while (frame == this.PPU.Frame) {
+            cpuCycles += this.Step();
+        }
         return cpuCycles;
     }
 
-    public void StepSeconds(double seconds) {
+    public void stepSeconds(double seconds) {
         int cycles = (int) (CPUFrequency * seconds);
         while (cycles > 0) {
             cycles -= this.Step();
@@ -97,9 +91,8 @@ public class Console {
     }
 
     public Color BackgroundColor() {
-//        int index = this.PPU.readPalette(0) % 64;
-//        return Palette[index];
-        return null;
+        int index = this.PPU.readPalette(0) % 64;
+        return Palette[index];
     }
 
     public void SetButtons1(boolean[] buttons) {
@@ -117,60 +110,14 @@ public class Console {
     public void SetAudioSampleRate(double sampleRate) {
         if (sampleRate != 0) {
             this.APU.sampleRate = CPUFrequency / sampleRate;
-            // todo
             this.APU.filterChain = new FilterChain(
-//                    new HighPassFilter((float) sampleRate, 90),
-//                    new HighPassFilter((float) sampleRate, 440),
-//                    new LowPassFilter((float) sampleRate, 14000)
+                    new HighPassFilter((float) sampleRate, 90),
+                    new HighPassFilter((float) sampleRate, 440),
+                    new LowPassFilter((float) sampleRate, 14000)
             );
         } else {
             this.APU.filterChain = null;
         }
-    }
-
-    public void SaveState(String filename) throws Exception {
-        File fileObj = new File(filename);
-        String dir = fileObj.getParent();
-        if (dir != null) {
-            File dirFile = new File(dir);
-            if (!dirFile.exists() && !dirFile.mkdirs()) {
-                throw new IOException("Failed to create directories: " + dir);
-            }
-        }
-        try (FileOutputStream fileOut = new FileOutputStream(filename);
-             ObjectOutputStream encoder = new ObjectOutputStream(fileOut)) {
-            this.Save(encoder);
-        }
-    }
-
-    public void Save(ObjectOutputStream encoder) throws Exception {
-        encoder.writeObject(this.RAM);
-        this.CPU.Save(encoder);
-        this.APU.Save(encoder);
-        this.PPU.Save(encoder);
-        this.Cartridge.Save(encoder);
-        this.Mapper.Save(encoder);
-        encoder.writeBoolean(true);
-    }
-
-    public void LoadState(String filename) throws Exception {
-        try (FileInputStream fileIn = new FileInputStream(filename);
-             ObjectInputStream decoder = new ObjectInputStream(fileIn)) {
-            this.Load(decoder);
-        }
-    }
-
-    public void Load(ObjectInputStream decoder) throws Exception {
-        Object obj = decoder.readObject();
-        if (obj instanceof byte[]) {
-            this.RAM = (byte[]) obj;
-        }
-//        this.CPU.Load(decoder);
-        this.APU.Load(decoder);
-        this.PPU.Load(decoder);
-        this.Cartridge.Load(decoder);
-        this.Mapper.Load(decoder);
-        boolean dummy = decoder.readBoolean();
     }
 }
 

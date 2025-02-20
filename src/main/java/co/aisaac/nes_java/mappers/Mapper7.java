@@ -1,4 +1,6 @@
-package co.aisaac.nes_java;
+package co.aisaac.nes_java.mappers;
+
+import co.aisaac.nes_java.Cartridge;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,7 +11,7 @@ import static co.aisaac.nes_java.memory.PPUMemory.MirrorSingle1;
 
 // Mapper7 class as defined in mapper7.go
 public class Mapper7 extends Mapper {
-    public Cartridge Cartridge;
+    public co.aisaac.nes_java.Cartridge Cartridge;
     public int prgBank;
 
     // Constructor corresponding to NewMapper7 in Golang

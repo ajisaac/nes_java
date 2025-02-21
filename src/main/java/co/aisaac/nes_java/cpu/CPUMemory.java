@@ -13,6 +13,7 @@ public class CPUMemory implements Memory {
 
     @Override
     public byte Read(int address) {
+        address = address & 0xFFFF;
         if (address < 0x2000) {
             return this.console.ram[address % 0x0800];
         } else if (address < 0x4000) {

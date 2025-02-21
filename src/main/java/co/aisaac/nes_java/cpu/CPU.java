@@ -225,28 +225,6 @@ public class CPU {
         SetFlags(0x24);
     }
 
-    // PrintInstruction prints the current CPU state
-    void PrintInstruction() {
-        int opcode = Read(PC);
-        int bytes = instructionSizes[opcode];
-        String name = instructionNames[opcode];
-        String w0 = String.format("%02X", Read(PC + 0));
-        String w1 = String.format("%02X", Read(PC + 1));
-        String w2 = String.format("%02X", Read(PC + 2));
-        if (bytes < 2) {
-            w1 = "  ";
-        }
-        if (bytes < 3) {
-            w2 = "  ";
-        }
-        System.out.printf(
-                "%4X  %s %s %s  %s %28s" +
-                        "A:%02X X:%02X Y:%02X P:%02X SP:%02X CYC:%3d\n",
-                PC, w0, w1, w2, name, "",
-                A, X, Y, Flags(), SP, (int) ((Cycles * 3) % 341)
-        );
-    }
-
     // pagesDiffer returns true if the two addresses reference different pages
     static boolean pagesDiffer(int a, int b) {
         return (a & 0xFF00) != (b & 0xFF00);
@@ -407,7 +385,7 @@ public class CPU {
         }
         interrupt = interruptNone;
 
-        int opcode = Read(PC);
+        int opcode = Read(PC) & 0xFF;
         int mode = instructionModes[opcode] & 0xFF;
 
         int address = 0;

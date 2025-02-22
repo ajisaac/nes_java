@@ -3,7 +3,6 @@ package co.aisaac.nes_java.cpu;
 import co.aisaac.nes_java.Console;
 import co.aisaac.nes_java.memory.Memory;
 
-
 public class CPU {
     // Functional interface for CPU instruction functions
     @FunctionalInterface
@@ -62,7 +61,7 @@ public class CPU {
     static final int modeZeroPageY = 13;
 
     // instructionModes indicates the addressing mode for each instruction
-    static final byte[] instructionModes = {
+    static final int[] /*byte[]*/ instructionModes = {
             6, 7, 6, 7, 11, 11, 11, 11, 6, 5, 4, 5, 1, 1, 1, 1,
             10, 9, 6, 9, 12, 12, 12, 12, 6, 3, 6, 3, 2, 2, 2, 2,
             1, 7, 6, 7, 11, 11, 11, 11, 6, 5, 4, 5, 1, 1, 1, 1,
@@ -82,7 +81,7 @@ public class CPU {
     };
 
     // instructionSizes indicates the size of each instruction in bytes
-    static final byte[] instructionSizes = {
+    static final int[] /*byte[]*/ instructionSizes = {
             2, 2, 0, 0, 2, 2, 2, 0, 1, 2, 1, 0, 3, 3, 3, 0,
             2, 2, 0, 0, 2, 2, 2, 0, 1, 3, 1, 0, 3, 3, 3, 0,
             3, 2, 0, 0, 2, 2, 2, 0, 1, 2, 1, 0, 3, 3, 3, 0,
@@ -103,7 +102,7 @@ public class CPU {
 
     // instructionCycles indicates the number of cycles used by each instruction,
     // not including conditional cycles
-    static final byte[] instructionCycles = {
+    static final int[] /*byte[]*/ instructionCycles = {
             7, 6, 2, 8, 3, 3, 5, 5, 3, 2, 2, 2, 4, 4, 6, 6,
             2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,
             6, 6, 2, 8, 3, 3, 5, 5, 4, 2, 2, 2, 4, 4, 6, 6,
@@ -124,7 +123,7 @@ public class CPU {
 
     // instructionPageCycles indicates the number of cycles used by each
     // instruction when a page is crossed
-    static final byte[] instructionPageCycles = {
+    static final int[] /*byte[]*/ instructionPageCycles = {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -356,12 +355,12 @@ public class CPU {
 
     // Read delegates to the memory read method
     public int Read(int address) {
-        return memory.Read(address);
+        return memory.read(address);
     }
 
     // Write delegates to the memory write method
     void Write(int address, int value) {
-        memory.Write(address, (byte) value);
+        memory.write(address, value);
     }
 
     // Step executes a single CPU instruction

@@ -11,10 +11,10 @@ public class PPUMemory implements Memory {
     }
 
     @Override
-    public byte Read(int address) {
+    public byte read(int address) {
         address = address % 0x4000;
         if (address < 0x2000) {
-            return this.console.mapper.Read(address);
+            return this.console.mapper.read(address);
         } else if (address < 0x3F00) {
             byte mode = this.console.cartridge.mirror;
             int mirrorAddr = MirrorAddress(mode, address) % 2048;
@@ -32,7 +32,7 @@ public class PPUMemory implements Memory {
     public void Write(int address, byte value) {
         address = address % 0x4000;
         if (address < 0x2000) {
-            this.console.mapper.Write(address, value);
+            this.console.mapper.write(address, value);
         } else if (address < 0x3F00) {
             byte mode = this.console.cartridge.mirror;
             int mirrorAddr = MirrorAddress(mode, address) % 2048;

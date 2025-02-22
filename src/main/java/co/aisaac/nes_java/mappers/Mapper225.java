@@ -54,7 +54,7 @@ public class Mapper225 extends Mapper {
     }
 
     // Read method equivalent to the Golang Read function
-    public byte Read(int address) {
+    public byte read(int address) {
         // Using Logger for error logging
         Logger logger = Logger.getLogger(Mapper225.class.getName());
         if (address < 0x2000) {
@@ -76,7 +76,7 @@ public class Mapper225 extends Mapper {
     }
 
     // Write method equivalent to the Golang Write function
-    public void Write(int address, byte value) {
+    public void write(int address, byte value) {
         if (address < 0x8000) {
             return;
         }

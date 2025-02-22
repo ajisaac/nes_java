@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import static co.aisaac.nes_java.cpu.CPU.CPUFrequency;
-import static co.aisaac.nes_java.Controller.NewController;
+import static co.aisaac.nes_java.Controller.newController;
 import static co.aisaac.nes_java.INes.LoadNESFile;
 import static co.aisaac.nes_java.mappers.Mapper.NewMapper;
 
@@ -20,7 +20,7 @@ public class Console {
     public Controller controller1;
     public Controller controller2;
     public Mapper mapper;
-    public byte[] ram;
+    public int[] ram; // byte[]
 
     // Constructor matching the struct initialization order.
     public Console(String path) {
@@ -30,9 +30,9 @@ public class Console {
             this.CPU = new CPU(this);
             this.APU = new APU(this);
             this.PPU = new PPU(this);
-            this.controller1 = NewController();
-            this.controller2 = NewController();
-            this.ram = new byte[2048];
+            this.controller1 = newController();
+            this.controller2 = newController();
+            this.ram = new int[2048]; // byte[2048]
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -81,11 +81,11 @@ public class Console {
     }
 
     public void SetButtons1(boolean[] buttons) {
-        this.controller1.SetButtons(buttons);
+        this.controller1.setButtons(buttons);
     }
 
     public void SetButtons2(boolean[] buttons) {
-        this.controller2.SetButtons(buttons);
+        this.controller2.setButtons(buttons);
     }
 
 

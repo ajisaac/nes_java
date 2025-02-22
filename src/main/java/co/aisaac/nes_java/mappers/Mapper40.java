@@ -54,7 +54,7 @@ public class Mapper40 extends Mapper {
     }
 
     // Read method to return data from CHR or PRG based on address ranges
-    public byte Read(int address) {
+    public byte read(int address) {
         if (address < 0x2000) {
             return this.Cartridge.CHR[address];
         } else if (address >= 0x6000 && address < 0x8000) {
@@ -75,7 +75,7 @@ public class Mapper40 extends Mapper {
     }
 
     // Write method to write data to CHR or modify cycles/bank based on address ranges
-    public void Write(int address, byte value) {
+    public void write(int address, byte value) {
         if (address < 0x2000) {
             this.Cartridge.CHR[address] = value;
         } else if (address >= 0x8000 && address < 0xa000) {

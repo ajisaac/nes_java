@@ -20,8 +20,8 @@ public class APU {
     public Noise noise = new Noise();
     public DMC dmc = new DMC();
     public long cycle;
-    public byte framePeriod;
-    public byte frameValue;
+    public int /*byte*/ framePeriod;
+    public int /*byte*/ frameValue;
     public boolean frameIRQ;
     public FilterChain filterChain = new FilterChain(new Filter[]{});
 
@@ -94,7 +94,7 @@ public class APU {
     public void stepFrameCounter() {
         switch (framePeriod) {
             case 4:
-                frameValue = (byte) ((frameValue + 1) % 4);
+                frameValue = (int /*byte*/) ((frameValue + 1) % 4);
                 switch (frameValue) {
                     case 0:
                     case 2:
@@ -114,7 +114,7 @@ public class APU {
                 }
                 break;
             case 5:
-                frameValue = (byte) ((frameValue + 1) % 5);
+                frameValue = (int /*byte*/) ((frameValue + 1) % 5);
                 switch (frameValue) {
                     case 0:
                     case 2:
@@ -166,7 +166,7 @@ public class APU {
         }
     }
 
-    public byte readRegister(int address) {
+    public int /*byte*/ readRegister(int address) {
         switch (address) {
             case 0x4015:
                 return readStatus();
@@ -176,7 +176,7 @@ public class APU {
         return 0;
     }
 
-    public void writeRegister(int address, byte value) {
+    public void writeRegister(int address, int /*byte*/ value) {
         switch (address) {
             case 0x4000:
                 pulse1.writeControl(value);
@@ -247,8 +247,8 @@ public class APU {
         }
     }
 
-    public byte readStatus() {
-        byte result = 0;
+    public int /*byte*/ readStatus() {
+        int /*byte*/ result = 0;
         if ((pulse1.lengthValue & 0xFF) > 0) {
             result |= 1;
         }
@@ -267,7 +267,7 @@ public class APU {
         return result;
     }
 
-    public void writeControl(byte value) {
+    public void writeControl(int /*byte*/ value) {
         // Using bitwise operations; casting to int for clarity.
         pulse1.enabled = ((value & 1) == 1);
         pulse2.enabled = (((value >> 1) & 1) == 1);
@@ -295,8 +295,8 @@ public class APU {
         }
     }
 
-    public void writeFrameCounter(byte value) {
-        framePeriod = (byte) (4 + ((value >> 7) & 1));
+    public void writeFrameCounter(int /*byte*/ value) {
+        framePeriod = (int /*byte*/) (4 + ((value >> 7) & 1));
         frameIRQ = (((value >> 6) & 1) == 0);
         // frameValue = 0;
         if (framePeriod == 5) {

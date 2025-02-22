@@ -30,7 +30,7 @@ public class PPU {
     public byte w;   // write toggle (1 bit)
     public byte f;   // even/odd frame flag (1 bit)
 
-    public byte register;
+    public int /*byte*/ register;
 
     // NMI flags
     public boolean nmiOccurred;
@@ -133,7 +133,7 @@ public class PPU {
         return 0;
     }
 
-    public void writeRegister(int address, byte value) {
+    public void writeRegister(int address, int /*byte*/ value) {
         this.register = value;
         switch (address) {
             case 0x2000:
@@ -678,10 +678,10 @@ public class PPU {
 
     // Helper methods for Memory read and write using the Memory interface.
     byte read(int address) {
-        return this.memory.Read(address);
+        return this.memory.read(address);
     }
 
     void write(int address, byte value) {
-        this.memory.Write(address, value);
+        this.memory.write(address, value);
     }
 }

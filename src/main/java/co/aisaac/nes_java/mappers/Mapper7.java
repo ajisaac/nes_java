@@ -11,7 +11,7 @@ import static co.aisaac.nes_java.memory.PPUMemory.MirrorSingle1;
 
 // Mapper7 class as defined in mapper7.go
 public class Mapper7 extends Mapper {
-    public co.aisaac.nes_java.Cartridge Cartridge;
+    public Cartridge Cartridge;
     public int prgBank;
 
     // Constructor corresponding to NewMapper7 in Golang
@@ -25,22 +25,12 @@ public class Mapper7 extends Mapper {
         return new Mapper7(cartridge);
     }
 
-    // Save method to encode the prgBank value using ObjectOutputStream
-    public void Save(ObjectOutputStream encoder) throws IOException {
-        encoder.writeInt(this.prgBank);
-    }
-
-    // Load method to decode and assign the prgBank value using ObjectInputStream
-    public void Load(ObjectInputStream decoder) throws IOException {
-        this.prgBank = decoder.readInt();
-    }
-
     // Empty Step method as in the original Golang code
     public void Step() {
     }
 
     @Override
-    public byte Read(int address) {
+    public int /*byte*/ read(int address) {
         if (address < 0x2000) {
             return this.Cartridge.CHR[address];
         } else if (address >= 0x8000) {
@@ -54,7 +44,7 @@ public class Mapper7 extends Mapper {
         }
     }
 
-    public void Write(int address, byte value) {
+    public void write(int address, int /*byte*/ value) {
         if (address < 0x2000) {
             this.Cartridge.CHR[address] = value;
         } else if (address >= 0x8000) {

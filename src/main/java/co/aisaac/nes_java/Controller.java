@@ -11,22 +11,22 @@ public class Controller {
     public static final int ButtonRight = 7;
 
     private boolean[] buttons = new boolean[8];
-    private byte index;
-    private byte strobe;
+    private int /*byte*/ index;
+    private int /*byte*/ strobe;
 
     public Controller() {
     }
 
-    public static Controller NewController() {
+    public static Controller newController() {
         return new Controller();
     }
 
-    public void SetButtons(boolean[] buttons) {
+    public void setButtons(boolean[] buttons) {
         this.buttons = buttons;
     }
 
-    public byte Read() {
-        byte value = 0;
+    public int /*byte*/ read() {
+        int /*byte*/ value = 0;
         if (this.index < 8 && this.buttons[this.index]) {
             value = 1;
         }
@@ -37,7 +37,7 @@ public class Controller {
         return value;
     }
 
-    public void Write(byte value) {
+    public void write(int /*byte*/ value) {
         this.strobe = value;
         if ((this.strobe & 1) == 1) {
             this.index = 0;

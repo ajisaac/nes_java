@@ -1,14 +1,14 @@
 package co.aisaac.nes_java;
 
 public class Cartridge {
-    public byte[] PRG;     // PRG-ROM banks
-    public byte[] CHR;     // CHR-ROM banks
-    public byte[] SRAM;    // Save RAM
-    public byte mapper;    // mapper type
-    public byte mirror;    // mirroring mode
-    public byte battery;   // battery present
+    public int /*byte*/[] PRG;     // PRG-ROM banks
+    public int /*byte*/[] CHR;     // CHR-ROM banks
+    public int /*byte*/[] SRAM;    // Save RAM
+    public int /*byte*/ mapper;    // mapper type
+    public int /*byte*/ mirror;    // mirroring mode
+    public int /*byte*/ battery;   // battery present
 
-    public Cartridge(byte[] PRG, byte[] CHR, byte[] SRAM, byte Mapper, byte Mirror, byte Battery) {
+    public Cartridge(int /*byte*/[] PRG, int /*byte*/[] CHR, int /*byte*/[] SRAM, int /*byte*/ Mapper, int /*byte*/ Mirror, int /*byte*/ Battery) {
         this.PRG = PRG;
         this.CHR = CHR;
         this.SRAM = SRAM;
@@ -17,8 +17,8 @@ public class Cartridge {
         this.battery = Battery;
     }
 
-    public static Cartridge NewCartridge(byte[] prg, byte[] chr, byte mapper, byte mirror, byte battery) {
-        byte[] sram = new byte[0x2000];
+    public static Cartridge NewCartridge(int /*byte*/[] prg, int /*byte*/[] chr, int /*byte*/ mapper, int /*byte*/ mirror, int /*byte*/ battery) {
+        int /*byte*/[] sram = new int /*byte*/[0x2000];
         return new Cartridge(prg, chr, sram, mapper, mirror, battery);
     }
 

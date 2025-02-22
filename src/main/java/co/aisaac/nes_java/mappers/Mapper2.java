@@ -2,10 +2,6 @@ package co.aisaac.nes_java.mappers;
 
 import co.aisaac.nes_java.Cartridge;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 // Mapper2 class translation from Golang to Java
 public class Mapper2 extends Mapper {
     // Corresponds to *Cartridge in Go; preserved as a public field
@@ -35,7 +31,7 @@ public class Mapper2 extends Mapper {
     }
 
     @Override
-    public byte Read(int address) {
+    public int /*byte*/ read(int address) {
         if (address < 0x2000) {
             return this.Cartridge.CHR[address];
         } else if (address >= 0xC000) {
@@ -54,7 +50,7 @@ public class Mapper2 extends Mapper {
     }
 
     @Override
-    public void Write(int address, byte value) {
+    public void write(int address, int /*byte*/ value) {
         if (address < 0x2000) {
             this.Cartridge.CHR[address] = value;
         } else if (address >= 0x8000) {

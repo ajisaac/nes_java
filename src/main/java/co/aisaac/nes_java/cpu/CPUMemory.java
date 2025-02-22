@@ -12,7 +12,7 @@ public class CPUMemory implements Memory {
     }
 
     @Override
-    public byte Read(int address) {
+    public int /*byte*/ read(int address) {
         address = address & 0xFFFF;
         if (address < 0x2000) {
             return this.console.ram[address % 0x0800];
@@ -23,13 +23,13 @@ public class CPUMemory implements Memory {
         } else if (address == 0x4015) {
             return this.console.APU.readRegister(address);
         } else if (address == 0x4016) {
-            return this.console.controller1.Read();
+            return this.console.controller1.read();
         } else if (address == 0x4017) {
-            return this.console.controller2.Read();
+            return this.console.controller2.read();
         } else if (address < 0x6000) {
             // TODO: I/O registers
         } else if (address >= 0x6000) {
-            return this.console.mapper.Read(address);
+            return this.console.mapper.read(address);
         } else {
             System.err.printf("unhandled cpu memory read at address: 0x%04X%n", address);
             System.exit(1);
@@ -38,7 +38,8 @@ public class CPUMemory implements Memory {
     }
 
     @Override
-    public void Write(int address, byte value) {
+    public void write(int address, int /*byte*/ value) {
+        value = value & 0xFF;
         if (address < 0x2000) {
             this.console.ram[address % 0x0800] = value;
         } else if (address < 0x4000) {
@@ -50,14 +51,14 @@ public class CPUMemory implements Memory {
         } else if (address == 0x4015) {
             this.console.APU.writeRegister(address, value);
         } else if (address == 0x4016) {
-            this.console.controller1.Write(value);
-            this.console.controller2.Write(value);
+            this.console.controller1.write(value);
+            this.console.controller2.write(value);
         } else if (address == 0x4017) {
             this.console.APU.writeRegister(address, value);
         } else if (address < 0x6000) {
             // TODO: I/O registers
         } else if (address >= 0x6000) {
-            this.console.mapper.Write(address, value);
+            this.console.mapper.write(address, value);
         } else {
             System.err.printf("unhandled cpu memory write at address: 0x%04X%n", address);
             System.exit(1);

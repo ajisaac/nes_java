@@ -18,13 +18,13 @@ import static co.aisaac.nes_java.memory.PPUMemory.MirrorVertical;
 public class Mapper1 extends Mapper {
     // Embedded Cartridge reference
     public co.aisaac.nes_java.Cartridge Cartridge;
-    public byte shiftRegister;
-    public byte control;
-    public byte prgMode;
-    public byte chrMode;
-    public byte prgBank;
-    public byte chrBank0;
-    public byte chrBank1;
+    public int /*byte*/ shiftRegister;
+    public int /*byte*/ control;
+    public int /*byte*/ prgMode;
+    public int /*byte*/ chrMode;
+    public int /*byte*/ prgBank;
+    public int /*byte*/ chrBank0;
+    public int /*byte*/ chrBank1;
     public int[] prgOffsets = new int[2];
     public int[] chrOffsets = new int[2];
 
@@ -39,46 +39,12 @@ public class Mapper1 extends Mapper {
         return m;
     }
 
-    // Save method - writes internal state using ObjectOutputStream
-    public void save(ObjectOutputStream encoder) throws IOException {
-        encoder.writeByte(shiftRegister);
-        encoder.writeByte(control);
-        encoder.writeByte(prgMode);
-        encoder.writeByte(chrMode);
-        encoder.writeByte(prgBank);
-        encoder.writeByte(chrBank0);
-        encoder.writeByte(chrBank1);
-        for (int i = 0; i < prgOffsets.length; i++) {
-            encoder.writeInt(prgOffsets[i]);
-        }
-        for (int i = 0; i < chrOffsets.length; i++) {
-            encoder.writeInt(chrOffsets[i]);
-        }
-    }
-
-    // Load method - reads internal state using ObjectInputStream
-    public void load(ObjectInputStream decoder) throws IOException, ClassNotFoundException {
-        shiftRegister = decoder.readByte();
-        control = decoder.readByte();
-        prgMode = decoder.readByte();
-        chrMode = decoder.readByte();
-        prgBank = decoder.readByte();
-        chrBank0 = decoder.readByte();
-        chrBank1 = decoder.readByte();
-        for (int i = 0; i < prgOffsets.length; i++) {
-            prgOffsets[i] = decoder.readInt();
-        }
-        for (int i = 0; i < chrOffsets.length; i++) {
-            chrOffsets[i] = decoder.readInt();
-        }
-    }
-
     // Step does nothing
     public void step() {
     }
 
     // Read method for Mapper1
-    public byte read(int address) {
+    public int /*byte*/ read(int address) {
         if (address < 0x2000) {
             int bank = address / 0x1000;
             int offset = address % 0x1000;
@@ -97,7 +63,7 @@ public class Mapper1 extends Mapper {
     }
 
     // Write method for Mapper1
-    public void write(int address, byte value) {
+    public void write(int address, int /*byte*/ value) {
         if (address < 0x2000) {
             int bank = address / 0x1000;
             int offset = address % 0x1000;
@@ -113,14 +79,14 @@ public class Mapper1 extends Mapper {
     }
 
     // loadRegister processes writes to the mapper register
-    public void loadRegister(int address, byte value) {
+    public void loadRegister(int address, int /*byte*/ value) {
         if ((value & 0x80) == 0x80) {
             shiftRegister = 0x10;
-            writeControl((byte)(control | 0x0C));
+            writeControl((int /*byte*/)(control | 0x0C));
         } else {
             boolean complete = ((shiftRegister & 1) == 1);
-            shiftRegister = (byte)((shiftRegister & 0xFF) >> 1);
-            shiftRegister |= (byte)((value & 1) << 4);
+            shiftRegister = (int /*byte*/)((shiftRegister & 0xFF) >> 1);
+            shiftRegister |= (int /*byte*/)((value & 1) << 4);
             if (complete) {
                 writeRegister(address, shiftRegister);
                 shiftRegister = 0x10;
@@ -129,7 +95,7 @@ public class Mapper1 extends Mapper {
     }
 
     // writeRegister dispatches the write based on the address range
-    public void writeRegister(int address, byte value) {
+    public void writeRegister(int address, int /*byte*/ value) {
         if (address <= 0x9FFF) {
             writeControl(value);
         } else if (address <= 0xBFFF) {
@@ -142,11 +108,11 @@ public class Mapper1 extends Mapper {
     }
 
     // writeControl (internal, $8000-$9FFF)
-    public void writeControl(byte value) {
+    public void writeControl(int /*byte*/ value) {
         control = value;
-        chrMode = (byte)((value >> 4) & 1);
-        prgMode = (byte)((value >> 2) & 3);
-        byte mirror = (byte)(value & 3);
+        chrMode = (int /*byte*/)((value >> 4) & 1);
+        prgMode = (int /*byte*/)((value >> 2) & 3);
+        int /*byte*/ mirror = (int /*byte*/)(value & 3);
         switch (mirror) {
             case 0:
                 Cartridge.mirror = MirrorSingle0;
@@ -165,20 +131,20 @@ public class Mapper1 extends Mapper {
     }
 
     // CHR bank 0 (internal, $A000-$BFFF)
-    public void writeCHRBank0(byte value) {
+    public void writeCHRBank0(int /*byte*/ value) {
         chrBank0 = value;
         updateOffsets();
     }
 
     // CHR bank 1 (internal, $C000-$DFFF)
-    public void writeCHRBank1(byte value) {
+    public void writeCHRBank1(int /*byte*/ value) {
         chrBank1 = value;
         updateOffsets();
     }
 
     // PRG bank (internal, $E000-$FFFF)
-    public void writePRGBank(byte value) {
-        prgBank = (byte)(value & 0x0F);
+    public void writePRGBank(int /*byte*/ value) {
+        prgBank = (int /*byte*/)(value & 0x0F);
         updateOffsets();
     }
 
@@ -224,8 +190,8 @@ public class Mapper1 extends Mapper {
         switch (prgMode) {
             case 0:
             case 1:
-                prgOffsets[0] = prgBankOffset(prgBank & (byte)0xFE);
-                prgOffsets[1] = prgBankOffset(prgBank | (byte)0x01);
+                prgOffsets[0] = prgBankOffset(prgBank & (int /*byte*/)0xFE);
+                prgOffsets[1] = prgBankOffset(prgBank | (int /*byte*/)0x01);
                 break;
             case 2:
                 prgOffsets[0] = 0;
@@ -238,8 +204,8 @@ public class Mapper1 extends Mapper {
         }
         switch (chrMode) {
             case 0:
-                chrOffsets[0] = chrBankOffset(chrBank0 & (byte)0xFE);
-                chrOffsets[1] = chrBankOffset(chrBank0 | (byte)0x01);
+                chrOffsets[0] = chrBankOffset(chrBank0 & (int /*byte*/)0xFE);
+                chrOffsets[1] = chrBankOffset(chrBank0 | (int /*byte*/)0x01);
                 break;
             case 1:
                 chrOffsets[0] = chrBankOffset(chrBank0);
@@ -250,16 +216,6 @@ public class Mapper1 extends Mapper {
 
     @Override
     public void Step() {
-
-    }
-
-    @Override
-    public byte Read(int address) {
-        return 0;
-    }
-
-    @Override
-    public void Write(int address, byte value) {
 
     }
 }

@@ -9,66 +9,32 @@ class Noise {
     public boolean mode;
     public int shiftRegister;
     public boolean lengthEnabled;
-    public byte lengthValue;
+    public int /*byte*/ lengthValue;
     public int timerPeriod;
     public int timerValue;
     public boolean envelopeEnabled;
     public boolean envelopeLoop;
     public boolean envelopeStart;
-    public byte envelopePeriod;
-    public byte envelopeValue;
-    public byte envelopeVolume;
-    public byte constantVolume;
+    public int /*byte*/ envelopePeriod;
+    public int /*byte*/ envelopeValue;
+    public int /*byte*/ envelopeVolume;
+    public int /*byte*/ constantVolume;
 
-    public void Save(ObjectOutputStream encoder) throws IOException {
-        encoder.writeObject(enabled);
-        encoder.writeObject(mode);
-        encoder.writeObject(shiftRegister);
-        encoder.writeObject(lengthEnabled);
-        encoder.writeObject(lengthValue);
-        encoder.writeObject(timerPeriod);
-        encoder.writeObject(timerValue);
-        encoder.writeObject(envelopeEnabled);
-        encoder.writeObject(envelopeLoop);
-        encoder.writeObject(envelopeStart);
-        encoder.writeObject(envelopePeriod);
-        encoder.writeObject(envelopeValue);
-        encoder.writeObject(envelopeVolume);
-        encoder.writeObject(constantVolume);
-    }
-
-    public void Load(ObjectInputStream decoder) throws IOException, ClassNotFoundException {
-        enabled = (Boolean) decoder.readObject();
-        mode = (Boolean) decoder.readObject();
-        shiftRegister = (Integer) decoder.readObject();
-        lengthEnabled = (Boolean) decoder.readObject();
-        lengthValue = (Byte) decoder.readObject();
-        timerPeriod = (Integer) decoder.readObject();
-        timerValue = (Integer) decoder.readObject();
-        envelopeEnabled = (Boolean) decoder.readObject();
-        envelopeLoop = (Boolean) decoder.readObject();
-        envelopeStart = (Boolean) decoder.readObject();
-        envelopePeriod = (Byte) decoder.readObject();
-        envelopeValue = (Byte) decoder.readObject();
-        envelopeVolume = (Byte) decoder.readObject();
-        constantVolume = (Byte) decoder.readObject();
-    }
-
-    public void writeControl(byte value) {
+    public void writeControl(int /*byte*/ value) {
         lengthEnabled = ((value >> 5) & 1) == 0;
         envelopeLoop = ((value >> 5) & 1) == 1;
         envelopeEnabled = ((value >> 4) & 1) == 0;
-        envelopePeriod = (byte) (value & 15);
-        constantVolume = (byte) (value & 15);
+        envelopePeriod = (int /*byte*/) (value & 15);
+        constantVolume = (int /*byte*/) (value & 15);
         envelopeStart = true;
     }
 
-    public void writePeriod(byte value) {
+    public void writePeriod(int /*byte*/ value) {
         mode = (value & 0x80) == 0x80;
         timerPeriod = NESConstants.noiseTable[value & 0x0F];
     }
 
-    public void writeLength(byte value) {
+    public void writeLength(int /*byte*/ value) {
         lengthValue = NESConstants.lengthTable[(value & 0xFF) >> 3];
         envelopeStart = true;
     }
@@ -76,7 +42,7 @@ class Noise {
     public void stepTimer() {
         if (timerValue == 0) {
             timerValue = timerPeriod;
-            byte shift;
+            int /*byte*/ shift;
             if (mode) {
                 shift = 6;
             } else {
@@ -114,7 +80,7 @@ class Noise {
         }
     }
 
-    public byte output() {
+    public int /*byte*/ output() {
         if (!enabled) {
             return 0;
         }

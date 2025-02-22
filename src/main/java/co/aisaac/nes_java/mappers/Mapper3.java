@@ -26,27 +26,13 @@ public class Mapper3 extends Mapper {
         return new Mapper3(cartridge, 0, 0, prgBanks - 1);
     }
 
-    // Save method writes the state of the mapper to the encoder.
-    public void Save(ObjectOutputStream encoder) throws IOException {
-        encoder.writeInt(chrBank);
-        encoder.writeInt(prgBank1);
-        encoder.writeInt(prgBank2);
-    }
-
-    // Load method reads the state of the mapper from the decoder.
-    public void Load(ObjectInputStream decoder) throws IOException {
-        chrBank = decoder.readInt();
-        prgBank1 = decoder.readInt();
-        prgBank2 = decoder.readInt();
-    }
-
     // Step method with no operation as defined in the original code.
     public void Step() {
     }
 
     // Read method returns a byte from the appropriate memory region
     // based on the given address.
-    public byte Read(int address) {
+    public int /*byte*/ read(int address) {
         if (address < 0x2000) {
             int index = this.chrBank * 0x2000 + address;
             return this.Cartridge.CHR[index];
@@ -66,7 +52,7 @@ public class Mapper3 extends Mapper {
 
     // Write method writes a byte value to the appropriate memory region
     // based on the given address.
-    public void Write(int address, byte value) {
+    public void write(int address, int /*byte*/ value) {
         if (address < 0x2000) {
             int index = this.chrBank * 0x2000 + address;
             this.Cartridge.CHR[index] = value;

@@ -9,15 +9,15 @@ import java.io.ObjectOutputStream;
 class DMC {
     public CPU cpu;
     public boolean enabled;
-    public byte value;
+    public int /*byte*/ value;
     public int sampleAddress;
     public int sampleLength;
     public int currentAddress;
     public int currentLength;
-    public byte shiftRegister;
-    public byte bitCount;
-    public byte tickPeriod;
-    public byte tickValue;
+    public int /*byte*/ shiftRegister;
+    public int /*byte*/ bitCount;
+    public int /*byte*/ tickPeriod;
+    public int /*byte*/ tickValue;
     public boolean loop;
     public boolean irq;
 
@@ -36,37 +36,22 @@ class DMC {
         encoder.writeObject(irq);
     }
 
-    public void Load(ObjectInputStream decoder) throws IOException, ClassNotFoundException {
-        enabled = (Boolean) decoder.readObject();
-        value = (Byte) decoder.readObject();
-        sampleAddress = (Integer) decoder.readObject();
-        sampleLength = (Integer) decoder.readObject();
-        currentAddress = (Integer) decoder.readObject();
-        currentLength = (Integer) decoder.readObject();
-        shiftRegister = (Byte) decoder.readObject();
-        bitCount = (Byte) decoder.readObject();
-        tickPeriod = (Byte) decoder.readObject();
-        tickValue = (Byte) decoder.readObject();
-        loop = (Boolean) decoder.readObject();
-        irq = (Boolean) decoder.readObject();
-    }
-
-    public void writeControl(byte value) {
+    public void writeControl(int /*byte*/ value) {
         irq = (value & 0x80) == 0x80;
         loop = (value & 0x40) == 0x40;
         tickPeriod = NESConstants.dmcTable[value & 0x0F];
     }
 
-    public void writeValue(byte value) {
-        this.value = (byte) (value & 0x7F);
+    public void writeValue(int /*byte*/ value) {
+        this.value = (int /*byte*/) (value & 0x7F);
     }
 
-    public void writeAddress(byte value) {
+    public void writeAddress(int /*byte*/ value) {
         // Sample address = %11AAAAAA.AA000000
         sampleAddress = 0xC000 | ((value & 0xFF) << 6);
     }
 
-    public void writeLength(byte value) {
+    public void writeLength(int /*byte*/ value) {
         // Sample length = %0000LLLL.LLLL0001
         sampleLength = ((value & 0xFF) << 4) | 1;
     }
@@ -93,7 +78,7 @@ class DMC {
         if (currentLength > 0 && bitCount == 0) {
             cpu.stall += 4;
             // todo
-            shiftRegister = (byte) cpu.Read(currentAddress);
+            shiftRegister = (int /*byte*/) cpu.Read(currentAddress);
             bitCount = 8;
             currentAddress++;
             if (currentAddress == 0) {
@@ -119,11 +104,11 @@ class DMC {
                 value -= 2;
             }
         }
-        shiftRegister = (byte) ((shiftRegister & 0xFF) >> 1);
+        shiftRegister = (int /*byte*/) ((shiftRegister & 0xFF) >> 1);
         bitCount--;
     }
 
-    public byte output() {
+    public int /*byte*/ output() {
         return value;
     }
 }

@@ -32,7 +32,7 @@ public abstract class Mapper {
                 return NewMapper7(cartridge);
             case 40:
                 return NewMapper40(console, cartridge);
-            case (byte) 225:
+            case (int /*byte*/) 225:
                 return NewMapper225(cartridge);
             default:
                 throw new Exception(String.format("unsupported mapper: %d", cartridge.mapper));
@@ -41,7 +41,7 @@ public abstract class Mapper {
 
     public abstract void Step();
 
-    public abstract byte Read(int address);
+    public abstract int /*byte*/ read(int address);
 
-    public abstract void Write(int address, byte value);
+    public abstract void write(int address, int /*byte*/ value);
 }

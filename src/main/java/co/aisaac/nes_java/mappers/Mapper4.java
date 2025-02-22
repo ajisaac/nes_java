@@ -4,8 +4,6 @@ import co.aisaac.nes_java.Cartridge;
 import co.aisaac.nes_java.Console;
 import co.aisaac.nes_java.PPU;
 
-import java.io.*;
-
 import static co.aisaac.nes_java.memory.PPUMemory.MirrorHorizontal;
 import static co.aisaac.nes_java.memory.PPUMemory.MirrorVertical;
 
@@ -13,14 +11,14 @@ import static co.aisaac.nes_java.memory.PPUMemory.MirrorVertical;
 public class Mapper4 extends Mapper {
     public co.aisaac.nes_java.Cartridge Cartridge;
     public co.aisaac.nes_java.Console console;
-    public byte register;
-    public byte[] registers = new byte[8];
-    public byte prgMode;
-    public byte chrMode;
+    public int /*byte*/ register;
+    public int /*byte*/[] registers = new int /*byte*/[8];
+    public int /*byte*/ prgMode;
+    public int /*byte*/ chrMode;
     public int[] prgOffsets = new int[4];
     public int[] chrOffsets = new int[8];
-    public byte reload;
-    public byte counter;
+    public int /*byte*/ reload;
+    public int /*byte*/ counter;
     public boolean irqEnable;
 
     // Constructor equivalent to NewMapper4 in Golang
@@ -35,38 +33,6 @@ public class Mapper4 extends Mapper {
 
     public static Mapper NewMapper4(Console console, Cartridge cartridge) {
         return new Mapper4(console, cartridge);
-    }
-
-    public void Save(ObjectOutputStream encoder) throws IOException {
-        encoder.writeByte(register);
-        encoder.write(registers);
-        encoder.writeByte(prgMode);
-        encoder.writeByte(chrMode);
-        for (int offset : prgOffsets) {
-            encoder.writeInt(offset);
-        }
-        for (int offset : chrOffsets) {
-            encoder.writeInt(offset);
-        }
-        encoder.writeByte(reload);
-        encoder.writeByte(counter);
-        encoder.writeBoolean(irqEnable);
-    }
-
-    public void Load(ObjectInputStream decoder) throws IOException {
-        register = decoder.readByte();
-        decoder.readFully(registers);
-        prgMode = decoder.readByte();
-        chrMode = decoder.readByte();
-        for (int i = 0; i < prgOffsets.length; i++) {
-            prgOffsets[i] = decoder.readInt();
-        }
-        for (int i = 0; i < chrOffsets.length; i++) {
-            chrOffsets[i] = decoder.readInt();
-        }
-        reload = decoder.readByte();
-        counter = decoder.readByte();
-        irqEnable = decoder.readBoolean();
     }
 
     public void Step() {
@@ -94,7 +60,7 @@ public class Mapper4 extends Mapper {
         }
     }
 
-    public byte Read(int address) {
+    public int /*byte*/ read(int address) {
         if (address < 0x2000) {
             int bank = address / 0x0400;
             int offset = address % 0x0400;
@@ -111,7 +77,7 @@ public class Mapper4 extends Mapper {
         }
     }
 
-    public void Write(int address, byte value) {
+    public void write(int address, int /*byte*/ value) {
         if (address < 0x2000) {
             int bank = address / 0x0400;
             int offset = address % 0x0400;
@@ -125,7 +91,7 @@ public class Mapper4 extends Mapper {
         }
     }
 
-    public void writeRegister(int address, byte value) {
+    public void writeRegister(int address, int /*byte*/ value) {
         if (address <= 0x9FFF && address % 2 == 0) {
             writeBankSelect(value);
         } else if (address <= 0x9FFF && address % 2 == 1) {
@@ -145,19 +111,19 @@ public class Mapper4 extends Mapper {
         }
     }
 
-    public void writeBankSelect(byte value) {
-        prgMode = (byte)((value >> 6) & 1);
-        chrMode = (byte)((value >> 7) & 1);
-        register = (byte)(value & 7);
+    public void writeBankSelect(int /*byte*/ value) {
+        prgMode = (int /*byte*/)((value >> 6) & 1);
+        chrMode = (int /*byte*/)((value >> 7) & 1);
+        register = (int /*byte*/)(value & 7);
         updateOffsets();
     }
 
-    public void writeBankData(byte value) {
+    public void writeBankData(int /*byte*/ value) {
         registers[register] = value;
         updateOffsets();
     }
 
-    public void writeMirror(byte value) {
+    public void writeMirror(int /*byte*/ value) {
         switch (value & 1) {
             case 0:
                 Cartridge.mirror = MirrorVertical;
@@ -168,22 +134,22 @@ public class Mapper4 extends Mapper {
         }
     }
 
-    public void writeProtect(byte value) {
+    public void writeProtect(int /*byte*/ value) {
     }
 
-    public void writeIRQLatch(byte value) {
+    public void writeIRQLatch(int /*byte*/ value) {
         reload = value;
     }
 
-    public void writeIRQReload(byte value) {
+    public void writeIRQReload(int /*byte*/ value) {
         counter = 0;
     }
 
-    public void writeIRQDisable(byte value) {
+    public void writeIRQDisable(int /*byte*/ value) {
         irqEnable = false;
     }
 
-    public void writeIRQEnable(byte value) {
+    public void writeIRQEnable(int /*byte*/ value) {
         irqEnable = true;
     }
 

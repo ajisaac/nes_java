@@ -22,11 +22,11 @@ public class INes {
     // _        [7]byte // unused padding
     public static class iNESFileHeader {
         public int Magic;     // iNES magic number
-        public byte NumPRG;   // number of PRG-ROM banks (16KB each)
-        public byte NumCHR;   // number of CHR-ROM banks (8KB each)
-        public byte Control1; // control bits
-        public byte Control2; // control bits
-        public byte NumRAM;   // PRG-RAM size (x 8KB)
+        public int /*byte*/ NumPRG;   // number of PRG-ROM banks (16KB each)
+        public int /*byte*/ NumCHR;   // number of CHR-ROM banks (8KB each)
+        public int /*byte*/ Control1; // control bits
+        public int /*byte*/ Control2; // control bits
+        public int /*byte*/ NumRAM;   // PRG-RAM size (x 8KB)
         public byte[] padding; // unused padding (7 bytes)
     }
 
@@ -86,8 +86,13 @@ public class INes {
 
             byte[] sram = {};
 
+            // tmp
+            int[] prg_tmp = {};
+            int[] chr_tmp = {};
+            int[] sram_tmp = {};
+
             // todo
-            return new Cartridge(prg, chr, sram, (byte) mapper, (byte) mirror, (byte) battery);
+            return new Cartridge(prg_tmp, chr_tmp, sram_tmp, (int /*byte*/) mapper, (int /*byte*/) mirror, (int /*byte*/) battery);
         } catch (EOFException e) {
             throw new Exception("Unexpected end of file", e);
         } catch (IOException e) {

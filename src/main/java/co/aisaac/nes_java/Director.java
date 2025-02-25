@@ -136,14 +136,14 @@ public class Director {
 
 
     void save(int snapshot) {
-        if (this.console.cartridge.battery != 0) {
-            try {
+//        if (this.console.cartridge.battery != 0) {
+//            try {
                 // todo
 //                writeSRAM(sramPath(this.hash, snapshot), this.console.cartridge.SRAM);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
     }
 
     // writeSRAM writes the SRAM byte array to the specified file.
@@ -165,18 +165,19 @@ public class Director {
     }
 
     int /*byte*/[] readSRAM(String filename) throws IOException {
-        File file = new File(filename);
-        FileInputStream fis = new FileInputStream(file);
-        DataInputStream dis = new DataInputStream(fis);
+//        File file = new File(filename);
+//        FileInputStream fis = new FileInputStream(file);
+//        DataInputStream dis = new DataInputStream(fis);
         int /*byte*/[] sram = new int /*byte*/[0x2000];
-        int bytesRead = dis.read(sram);
-        if (bytesRead != sram.length) {
-            dis.close();
-            fis.close();
-            throw new IOException("Failed to read full SRAM data");
-        }
-        dis.close();
-        fis.close();
+        // todo
+//        int bytesRead = dis.read(sram);
+//        if (bytesRead != sram.length) {
+//            dis.close();
+//            fis.close();
+//            throw new IOException("Failed to read full SRAM data");
+//        }
+//        dis.close();
+//        fis.close();
         return sram;
     }
 

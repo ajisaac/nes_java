@@ -17,18 +17,18 @@ public class PPU {
     public long Frame;   // frame counter
 
     // storage variables
-    public byte[] paletteData = new byte[32];
-    public byte[] nameTableData = new byte[2048];
-    public byte[] oamData = new byte[256];
+    public int /*byte*/[] paletteData = new int /*byte*/[32];
+    public int /*byte*/[] nameTableData = new int /*byte*/[2048];
+    public int /*byte*/[] oamData = new int /*byte*/[256];
     public BufferedImage front;
     public BufferedImage back;
 
     // PPU registers
     public int v; // current vram address (15 bit)
     public int t; // temporary vram address (15 bit)
-    public byte x;   // fine x scroll (3 bit)
-    public byte w;   // write toggle (1 bit)
-    public byte f;   // even/odd frame flag (1 bit)
+    public int /*byte*/ x;   // fine x scroll (3 bit)
+    public int /*byte*/ w;   // write toggle (1 bit)
+    public int /*byte*/ f;   // even/odd frame flag (1 bit)
 
     public int /*byte*/ register;
 
@@ -36,49 +36,49 @@ public class PPU {
     public boolean nmiOccurred;
     public boolean nmiOutput;
     public boolean nmiPrevious;
-    public byte nmiDelay;
+    public int /*byte*/ nmiDelay;
 
     // background temporary variables
-    public byte nameTableByte;
-    public byte attributeTableByte;
-    public byte lowTileByte;
-    public byte highTileByte;
+    public int /*byte*/ nameTableByte;
+    public int /*byte*/ attributeTableByte;
+    public int /*byte*/ lowTileByte;
+    public int /*byte*/ highTileByte;
     public long tileData;
 
     // sprite temporary variables
     public int spriteCount;
     public int[] spritePatterns = new int[8];
-    public byte[] spritePositions = new byte[8];
-    public byte[] spritePriorities = new byte[8];
-    public byte[] spriteIndexes = new byte[8];
+    public int /*byte*/[] spritePositions = new int /*byte*/[8];
+    public int /*byte*/[] spritePriorities = new int /*byte*/[8];
+    public int /*byte*/[] spriteIndexes = new int /*byte*/[8];
 
     // $2000 PPUCTRL
-    public byte flagNameTable;       // 0: $2000; 1: $2400; 2: $2800; 3: $2C00
-    public byte flagIncrement;       // 0: add 1; 1: add 32
-    public byte flagSpriteTable;     // 0: $0000; 1: $1000; ignored in 8x16 mode
-    public byte flagBackgroundTable; // 0: $0000; 1: $1000
-    public byte flagSpriteSize;      // 0: 8x8; 1: 8x16
-    public byte flagMasterSlave;     // 0: read EXT; 1: write EXT
+    public int /*byte*/ flagNameTable;       // 0: $2000; 1: $2400; 2: $2800; 3: $2C00
+    public int /*byte*/ flagIncrement;       // 0: add 1; 1: add 32
+    public int /*byte*/ flagSpriteTable;     // 0: $0000; 1: $1000; ignored in 8x16 mode
+    public int /*byte*/ flagBackgroundTable; // 0: $0000; 1: $1000
+    public int /*byte*/ flagSpriteSize;      // 0: 8x8; 1: 8x16
+    public int /*byte*/ flagMasterSlave;     // 0: read EXT; 1: write EXT
 
     // $2001 PPUMASK
-    public byte flagGrayscale;          // 0: color; 1: grayscale
-    public byte flagShowLeftBackground; // 0: hide; 1: show
-    public byte flagShowLeftSprites;    // 0: hide; 1: show
-    public byte flagShowBackground;     // 0: hide; 1: show
-    public byte flagShowSprites;        // 0: hide; 1: show
-    public byte flagRedTint;            // 0: normal; 1: emphasized
-    public byte flagGreenTint;          // 0: normal; 1: emphasized
-    public byte flagBlueTint;           // 0: normal; 1: emphasized
+    public int /*byte*/ flagGrayscale;          // 0: color; 1: grayscale
+    public int /*byte*/ flagShowLeftBackground; // 0: hide; 1: show
+    public int /*byte*/ flagShowLeftSprites;    // 0: hide; 1: show
+    public int /*byte*/ flagShowBackground;     // 0: hide; 1: show
+    public int /*byte*/ flagShowSprites;        // 0: hide; 1: show
+    public int /*byte*/ flagRedTint;            // 0: normal; 1: emphasized
+    public int /*byte*/ flagGreenTint;          // 0: normal; 1: emphasized
+    public int /*byte*/ flagBlueTint;           // 0: normal; 1: emphasized
 
     // $2002 PPUSTATUS
-    public byte flagSpriteZeroHit;
-    public byte flagSpriteOverflow;
+    public int /*byte*/ flagSpriteZeroHit;
+    public int /*byte*/ flagSpriteOverflow;
 
     // $2003 OAMADDR
-    public byte oamAddress;
+    public int /*byte*/ oamAddress;
 
     // $2007 PPUDATA
-    public byte bufferedData; // for buffered reads
+    public int /*byte*/ bufferedData; // for buffered reads
 
     // Palette is declared as a static array with 64 entries.
     public static Color[] Palette = new Color[64];
@@ -102,26 +102,26 @@ public class PPU {
         this.Cycle = 340;
         this.ScanLine = 240;
         this.Frame = 0;
-        this.writeControl((byte) 0);
-        this.writeMask((byte) 0);
-        this.writeOAMAddress((byte) 0);
+        this.writeControl((int /*byte*/) 0);
+        this.writeMask((int /*byte*/) 0);
+        this.writeOAMAddress((int /*byte*/) 0);
     }
 
-    public byte readPalette(int address) {
+    public int /*byte*/ readPalette(int address) {
         if (address >= 16 && address % 4 == 0) {
             address -= 16;
         }
         return this.paletteData[address];
     }
 
-    public void writePalette(int address, byte value) {
+    public void writePalette(int address, int /*byte*/ value) {
         if (address >= 16 && address % 4 == 0) {
             address -= 16;
         }
         this.paletteData[address] = value;
     }
 
-    public byte readRegister(int address) {
+    public int /*byte*/ readRegister(int address) {
         switch (address) {
             case 0x2002:
                 return this.readStatus();
@@ -164,13 +164,13 @@ public class PPU {
     }
 
     // $2000: PPUCTRL
-    void writeControl(byte value) {
-        this.flagNameTable = (byte) ((value >> 0) & 3);
-        this.flagIncrement = (byte) ((value >> 2) & 1);
-        this.flagSpriteTable = (byte) ((value >> 3) & 1);
-        this.flagBackgroundTable = (byte) ((value >> 4) & 1);
-        this.flagSpriteSize = (byte) ((value >> 5) & 1);
-        this.flagMasterSlave = (byte) ((value >> 6) & 1);
+    void writeControl(int /*byte*/ value) {
+        this.flagNameTable = (int /*byte*/) ((value >> 0) & 3);
+        this.flagIncrement = (int /*byte*/) ((value >> 2) & 1);
+        this.flagSpriteTable = (int /*byte*/) ((value >> 3) & 1);
+        this.flagBackgroundTable = (int /*byte*/) ((value >> 4) & 1);
+        this.flagSpriteSize = (int /*byte*/) ((value >> 5) & 1);
+        this.flagMasterSlave = (int /*byte*/) ((value >> 6) & 1);
         this.nmiOutput = ((value >> 7) & 1) == 1;
         this.nmiChange();
         // t: ....BA.. ........ = d: ......BA
@@ -178,19 +178,19 @@ public class PPU {
     }
 
     // $2001: PPUMASK
-    void writeMask(byte value) {
-        this.flagGrayscale = (byte) ((value >> 0) & 1);
-        this.flagShowLeftBackground = (byte) ((value >> 1) & 1);
-        this.flagShowLeftSprites = (byte) ((value >> 2) & 1);
-        this.flagShowBackground = (byte) ((value >> 3) & 1);
-        this.flagShowSprites = (byte) ((value >> 4) & 1);
-        this.flagRedTint = (byte) ((value >> 5) & 1);
-        this.flagGreenTint = (byte) ((value >> 6) & 1);
-        this.flagBlueTint = (byte) ((value >> 7) & 1);
+    void writeMask(int /*byte*/ value) {
+        this.flagGrayscale = (int /*byte*/) ((value >> 0) & 1);
+        this.flagShowLeftBackground = (int /*byte*/) ((value >> 1) & 1);
+        this.flagShowLeftSprites = (int /*byte*/) ((value >> 2) & 1);
+        this.flagShowBackground = (int /*byte*/) ((value >> 3) & 1);
+        this.flagShowSprites = (int /*byte*/) ((value >> 4) & 1);
+        this.flagRedTint = (int /*byte*/) ((value >> 5) & 1);
+        this.flagGreenTint = (int /*byte*/) ((value >> 6) & 1);
+        this.flagBlueTint = (int /*byte*/) ((value >> 7) & 1);
     }
 
     // $2002: PPUSTATUS
-    byte readStatus() {
+    int /*byte*/ readStatus() {
         int result = (this.register & 0x1F);
         result |= (this.flagSpriteOverflow & 0xFF) << 5;
         result |= (this.flagSpriteZeroHit & 0xFF) << 6;
@@ -201,37 +201,37 @@ public class PPU {
         this.nmiChange();
         // w:                   = 0
         this.w = 0;
-        return (byte) result;
+        return (int /*byte*/) result;
     }
 
     // $2003: OAMADDR
-    void writeOAMAddress(byte value) {
+    void writeOAMAddress(int /*byte*/ value) {
         this.oamAddress = value;
     }
 
     // $2004: OAMDATA (read)
-    byte readOAMData() {
-        byte data = this.oamData[this.oamAddress & 0xFF];
+    int /*byte*/ readOAMData() {
+        int /*byte*/ data = this.oamData[this.oamAddress & 0xFF];
         if ((this.oamAddress & 0x03) == 0x02) {
-            data = (byte) (data & 0xE3);
+            data = (int /*byte*/) (data & 0xE3);
         }
         return data;
     }
 
     // $2004: OAMDATA (write)
-    void writeOAMData(byte value) {
+    void writeOAMData(int /*byte*/ value) {
         this.oamData[this.oamAddress & 0xFF] = value;
         this.oamAddress++;
     }
 
     // $2005: PPUSCROLL
-    void writeScroll(byte value) {
+    void writeScroll(int /*byte*/ value) {
         if (this.w == 0) {
             // t: ........ ...HGFED = d: HGFED...
             // x:               CBA = d: .....CBA
             // w:                   = 1
             this.t = (this.t & 0xFFE0) | ((value & 0xFF) >> 3);
-            this.x = (byte) (value & 0x07);
+            this.x = (int /*byte*/) (value & 0x07);
             this.w = 1;
         } else {
             // t: .CBA..HG FED..... = d: HGFEDCBA
@@ -243,7 +243,7 @@ public class PPU {
     }
 
     // $2006: PPUADDR
-    void writeAddress(byte value) {
+    void writeAddress(int /*byte*/ value) {
         if (this.w == 0) {
             // t: ..FEDCBA ........ = d: ..FEDCBA
             // t: .X...... ........ = 0
@@ -261,12 +261,12 @@ public class PPU {
     }
 
     // $2007: PPUDATA (read)
-    byte readData() {
+    int /*byte*/ readData() {
         int addr = this.v & 0xFFFF;
-        byte value = this.read(addr);
+        int /*byte*/ value = this.read(addr);
         // emulate buffered reads
         if ((addr % 0x4000) < 0x3F00) {
-            byte buffered = this.bufferedData;
+            int /*byte*/ buffered = this.bufferedData;
             this.bufferedData = value;
             value = buffered;
         } else {
@@ -282,7 +282,7 @@ public class PPU {
     }
 
     // $2007: PPUDATA (write)
-    void writeData(byte value) {
+    void writeData(int /*byte*/ value) {
         this.write(this.v, value);
         if (this.flagIncrement == 0) {
             this.v += 1;
@@ -292,11 +292,11 @@ public class PPU {
     }
 
     // $4014: OAMDMA
-    void writeDMA(byte value) {
+    void writeDMA(int /*byte*/ value) {
         CPU cpu = this.console.CPU;
         int address = (value & 0xFF) << 8;
         for (int i = 0; i < 256; i++) {
-            this.oamData[this.oamAddress & 0xFF] = (byte) cpu.Read(address);
+            this.oamData[this.oamAddress & 0xFF] = (int /*byte*/) cpu.Read(address);
             this.oamAddress++;
             address++;
         }
@@ -393,7 +393,7 @@ public class PPU {
     void fetchAttributeTableByte() {
         int address = 0x23C0 | (this.v & 0x0C00) | ((this.v >> 4) & 0x38) | ((this.v >> 2) & 0x07);
         int shift = ((this.v >> 4) & 4) | (this.v & 2);
-        this.attributeTableByte = (byte) (((this.read(address) >> shift) & 3) << 2);
+        this.attributeTableByte = (int /*byte*/) (((this.read(address) >> shift) & 3) << 2);
     }
 
     void fetchLowTileByte() {
@@ -418,8 +418,8 @@ public class PPU {
             int a = this.attributeTableByte & 0xFF;
             int p1 = (this.lowTileByte & 0x80) >> 7;
             int p2 = (this.highTileByte & 0x80) >> 6;
-            this.lowTileByte = (byte) ((this.lowTileByte & 0xFF) << 1);
-            this.highTileByte = (byte) ((this.highTileByte & 0xFF) << 1);
+            this.lowTileByte = (int /*byte*/) ((this.lowTileByte & 0xFF) << 1);
+            this.highTileByte = (int /*byte*/) ((this.highTileByte & 0xFF) << 1);
             data <<= 4;
             data |= (a | p1 | p2);
         }
@@ -430,12 +430,12 @@ public class PPU {
         return (int) (this.tileData >> 32);
     }
 
-    byte backgroundPixel() {
+    int /*byte*/ backgroundPixel() {
         if (this.flagShowBackground == 0) {
             return 0;
         }
         int data = this.fetchTileData() >> ((7 - this.x) * 4);
-        return (byte) (data & 0x0F);
+        return (int /*byte*/) (data & 0x0F);
     }
 
     int[] spritePixel() {
@@ -460,10 +460,10 @@ public class PPU {
     void renderPixel() {
         int x = this.Cycle - 1;
         int y = this.ScanLine;
-        byte background = this.backgroundPixel();
+        int /*byte*/ background = this.backgroundPixel();
         int[] spriteResult = this.spritePixel();
         int i = spriteResult[0];
-        byte sprite = (byte) spriteResult[1];
+        int /*byte*/ sprite = (int /*byte*/) spriteResult[1];
         if (x < 8 && this.flagShowLeftBackground == 0) {
             background = 0;
         }
@@ -472,11 +472,11 @@ public class PPU {
         }
         boolean b = (background % 4) != 0;
         boolean s = (sprite % 4) != 0;
-        byte color;
+        int /*byte*/ color;
         if (!b && !s) {
             color = 0;
         } else if (!b && s) {
-            color = (byte) (sprite | 0x10);
+            color = (int /*byte*/) (sprite | 0x10);
         } else if (b && !s) {
             color = background;
         } else {
@@ -484,7 +484,7 @@ public class PPU {
                 this.flagSpriteZeroHit = 1;
             }
             if (this.spritePriorities[i] == 0) {
-                color = (byte) (sprite | 0x10);
+                color = (int /*byte*/) (sprite | 0x10);
             } else {
                 color = background;
             }
@@ -558,8 +558,8 @@ public class PPU {
             if (count < 8) {
                 this.spritePatterns[count] = this.fetchSpritePattern(i, row);
                 this.spritePositions[count] = this.oamData[i * 4 + 3];
-                this.spritePriorities[count] = (byte) ((a >> 5) & 1);
-                this.spriteIndexes[count] = (byte) i;
+                this.spritePriorities[count] = (int /*byte*/) ((a >> 5) & 1);
+                this.spriteIndexes[count] = (int /*byte*/) i;
             }
             count++;
         }
@@ -584,7 +584,7 @@ public class PPU {
                 this.Cycle = 0;
                 this.ScanLine = 0;
                 this.Frame++;
-                this.f = (byte) (this.f ^ 1);
+                this.f = (int /*byte*/) (this.f ^ 1);
                 return;
             }
         }
@@ -595,7 +595,7 @@ public class PPU {
             if (this.ScanLine > 261) {
                 this.ScanLine = 0;
                 this.Frame++;
-                this.f = (byte) (this.f ^ 1);
+                this.f = (int /*byte*/) (this.f ^ 1);
             }
         }
     }
@@ -677,11 +677,11 @@ public class PPU {
     }
 
     // Helper methods for Memory read and write using the Memory interface.
-    byte read(int address) {
+    int /*byte*/ read(int address) {
         return this.memory.read(address);
     }
 
-    void write(int address, byte value) {
+    void write(int address, int /*byte*/ value) {
         this.memory.write(address, value);
     }
 }

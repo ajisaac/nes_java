@@ -50,7 +50,7 @@ public class Director {
         this.audio = new Audio();
 
         if (this.console.cartridge.battery != 0) {
-            byte[] sram;
+            int /*byte*/[] sram;
             try {
                 sram = readSRAM(sramPath(this.hash, -1));
             } catch (IOException e) {
@@ -138,7 +138,8 @@ public class Director {
     void save(int snapshot) {
         if (this.console.cartridge.battery != 0) {
             try {
-                writeSRAM(sramPath(this.hash, snapshot), this.console.cartridge.SRAM);
+                // todo
+//                writeSRAM(sramPath(this.hash, snapshot), this.console.cartridge.SRAM);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -146,6 +147,7 @@ public class Director {
     }
 
     // writeSRAM writes the SRAM byte array to the specified file.
+    // todo
     void writeSRAM(String filename, byte[] sram) throws IOException {
         File file = new File(filename);
         File dir = file.getParentFile();
@@ -162,11 +164,11 @@ public class Director {
         fos.close();
     }
 
-    byte[] readSRAM(String filename) throws IOException {
+    int /*byte*/[] readSRAM(String filename) throws IOException {
         File file = new File(filename);
         FileInputStream fis = new FileInputStream(file);
         DataInputStream dis = new DataInputStream(fis);
-        byte[] sram = new byte[0x2000];
+        int /*byte*/[] sram = new int /*byte*/[0x2000];
         int bytesRead = dis.read(sram);
         if (bytesRead != sram.length) {
             dis.close();
@@ -244,7 +246,7 @@ public class Director {
             byte[] data = Files.readAllBytes(Paths.get(path));
             byte[] digest = md.digest(data);
             StringBuilder sb = new StringBuilder();
-            for (byte b : digest) {
+            for (int /*byte*/ b : digest) {
                 sb.append(String.format("%02x", b));
             }
             return sb.toString();
@@ -272,15 +274,16 @@ public class Director {
         ByteBuffer buffer = ByteBuffer.allocateDirect(image.getWidth() * image.getHeight() * 4);
         buffer.order(ByteOrder.nativeOrder());
         for (int pixel : pixels) {
+            // TODO
             // Convert ARGB to RGBA
-            byte a = (byte) ((pixel >> 24) & 0xFF);
-            byte r = (byte) ((pixel >> 16) & 0xFF);
-            byte g = (byte) ((pixel >> 8) & 0xFF);
-            byte b = (byte) (pixel & 0xFF);
-            buffer.put(r);
-            buffer.put(g);
-            buffer.put(b);
-            buffer.put(a);
+            int /*byte*/ a = (int /*byte*/) ((pixel >> 24) & 0xFF);
+            int /*byte*/ r = (int /*byte*/) ((pixel >> 16) & 0xFF);
+            int /*byte*/ g = (int /*byte*/) ((pixel >> 8) & 0xFF);
+            int /*byte*/ b = (int /*byte*/) (pixel & 0xFF);
+            buffer.put((byte) r);
+            buffer.put((byte) g);
+            buffer.put((byte) b);
+            buffer.put((byte) a);
         }
         buffer.flip();
         return buffer;

@@ -3,13 +3,9 @@ package co.aisaac.nes_java.mappers;
 import co.aisaac.nes_java.Cartridge;
 import co.aisaac.nes_java.Console;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 // Mapper40 class implementing Mapper interface and translating the original Golang code
 public class Mapper40 extends Mapper {
-    co.aisaac.nes_java.Cartridge Cartridge;          // corresponds to *Cartridge
+    Cartridge Cartridge;          // corresponds to *Cartridge
     Console console;              // corresponds to *Console
     int bank;                     // bank field
     int cycles;                   // cycles field
@@ -27,20 +23,6 @@ public class Mapper40 extends Mapper {
         return new Mapper40(console, cartridge);
     }
 
-    // Save method to encode the mapper's state
-    public void Save(ObjectOutputStream encoder) throws IOException {
-        // todo
-//        encoder.encodeInt(this.bank);
-//        encoder.encodeInt(this.cycles);
-    }
-
-    // Load method to decode and restore the mapper's state
-    public void Load(ObjectInputStream decoder) throws IOException {
-        // todo
-//        this.bank = decoder.decodeInt();
-//        this.cycles = decoder.decodeInt();
-    }
-
     // Step method simulating clock cycles and triggering IRQ when necessary
     public void Step() {
         if (this.cycles < 0) {
@@ -54,7 +36,7 @@ public class Mapper40 extends Mapper {
     }
 
     // Read method to return data from CHR or PRG based on address ranges
-    public byte read(int address) {
+    public int /*byte*/ read(int address) {
         if (address < 0x2000) {
             return this.Cartridge.CHR[address];
         } else if (address >= 0x6000 && address < 0x8000) {
@@ -75,7 +57,7 @@ public class Mapper40 extends Mapper {
     }
 
     // Write method to write data to CHR or modify cycles/bank based on address ranges
-    public void write(int address, byte value) {
+    public void write(int address, int /*byte*/ value) {
         if (address < 0x2000) {
             this.Cartridge.CHR[address] = value;
         } else if (address >= 0x8000 && address < 0xa000) {

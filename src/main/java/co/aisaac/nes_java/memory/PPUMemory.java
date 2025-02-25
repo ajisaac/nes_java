@@ -11,12 +11,12 @@ public class PPUMemory implements Memory {
     }
 
     @Override
-    public byte read(int address) {
+    public int /*byte*/ read(int address) {
         address = address % 0x4000;
         if (address < 0x2000) {
             return this.console.mapper.read(address);
         } else if (address < 0x3F00) {
-            byte mode = this.console.cartridge.mirror;
+            int /*byte*/ mode = this.console.cartridge.mirror;
             int mirrorAddr = MirrorAddress(mode, address) % 2048;
             return this.console.PPU.nameTableData[mirrorAddr];
         } else if (address < 0x4000) {
@@ -29,12 +29,12 @@ public class PPUMemory implements Memory {
     }
 
     @Override
-    public void Write(int address, byte value) {
+    public void write(int address, int /*byte*/ value) {
         address = address % 0x4000;
         if (address < 0x2000) {
             this.console.mapper.write(address, value);
         } else if (address < 0x3F00) {
-            byte mode = this.console.cartridge.mirror;
+            int /*byte*/ mode = this.console.cartridge.mirror;
             int mirrorAddr = MirrorAddress(mode, address) % 2048;
             this.console.PPU.nameTableData[mirrorAddr] = value;
         } else if (address < 0x4000) {
@@ -62,7 +62,7 @@ public class PPUMemory implements Memory {
     };
 
     // MirrorAddress function
-    public static int MirrorAddress(byte mode, int address) {
+    public static int MirrorAddress(int /*byte*/ mode, int address) {
         address = (address - 0x2000) % 0x1000;
         int table = address / 0x0400;
         int offset = address % 0x0400;
